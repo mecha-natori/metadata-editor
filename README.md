@@ -1,0 +1,10 @@
+# 基板IDチェンジャー
+
+メカトロニクス研究部会が制作した一部基板のCAN IDを書き換えるソフトウェアです。 CAN
+ID選択用のロータリーDIPスイッチを付け忘れるという痛恨の大失態を何とかするために爆誕しました。
+
+ダウンロードは[GitHub Release]から。
+macOS・Windowsユーザーはインストール・起動時になんか怒られるかもしれませんが気にしないで下さい。プラットフォームのせいです。
+どうしても気になる方は一緒に`〜.sig`も落として`gpg --verify 〜.sig`で検証して下さい。GPG鍵のフィンガープリントは`DCF85C4F1287C99B0E4E12B3AB39C1264641DB7E`です。
+
+[github release]: https://github.com/mecha-natori/id-changer/releases
