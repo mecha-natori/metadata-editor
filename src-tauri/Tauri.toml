@@ -1,11 +1,11 @@
 "$schema" = "https://schema.tauri.app/config/2"
-identifier = "io.github.mecha-natori.id-changer"
-mainBinaryName = "id-changer"
-productName = "mechatronicslab-circuit-id-changer"
+identifier = "io.github.mecha-natori.circuit-metadata-editor"
+mainBinaryName = "metadata-editor"
+productName = "mechatronicslab-circuit-metadata-editor"
 
 [[app.windows]]
 height = 600
-title = "基板IDチェンジャー"
+title = "基板メタデータエディター"
 width = 800
 
 [build]

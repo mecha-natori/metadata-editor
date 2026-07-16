@@ -2,13 +2,13 @@
 
 # shellcheck disable=SC2034
 
-_pkgname='mechatronicslab-circuit-id-changer'
+_pkgname='mechatronicslab-circuit-metadata-editor'
 pkgname="${_pkgname}-git"
 pkgver='0.1.0' # auto detect from src-tauri/Cargo.toml
 pkgrel=1
-pkgdesc='Change CAN ID of circuit made by Mechatronics Lab'
+pkgdesc='Edit metadata of circuit made by Mechatronics Lab'
 arch=('x86_64')
-url='https://github.com/mecha-natori/id-changer'
+url='https://github.com/mecha-natori/metadata-editor'
 license=('MIT')
 depends=(
     'cairo'
@@ -38,23 +38,23 @@ source=("git+${url}.git")
 b2sums=('SKIP')
 
 pkgver() {
-    cd ./id-changer || return 1
+    cd ./metadata-editor || return 1
     yq '.package.version' ./src-tauri/Cargo.toml
 }
 
 prepare() {
-    cd ./id-changer || return 1
+    cd ./metadata-editor || return 1
     rustup toolchain install nightly --profile minimal
     pnpm ci
 }
 
 build() {
-    cd ./id-changer || return 1
+    cd ./metadata-editor || return 1
     pnpm tauri build -b deb
 }
 
 package() {
-    cd ./id-changer || return 1
+    cd ./metadata-editor || return 1
     # shellcheck disable=SC2154
     cp -a "./target/release/bundle/deb/${_pkgname}_${pkgver}_amd64/data/"* "${pkgdir}"
     install -Dm444 LICENSE.md "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"

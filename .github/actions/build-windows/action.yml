@@ -1,4 +1,4 @@
-description: "Builds the id-checker project for Windows"
+description: "Builds the metadata-editor project for Windows"
 inputs:
   gpg-private-key:
     description: "GPG private key for signing"

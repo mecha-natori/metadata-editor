@@ -44,10 +44,10 @@ rustPlatform.buildRustPackage (finalAttrs: {
   cargoLock.lockFile = ../Cargo.lock;
   meta = {
     inherit (cargoToml.package) description;
-    downloadPage = "https://github.com/mecha-natori/id-changer/releases";
-    homepage = "https://github.com/mecha-natori/id-changer/#readme";
+    downloadPage = "https://github.com/mecha-natori/metadata-editor/releases";
+    homepage = "https://github.com/mecha-natori/metadata-editor/#readme";
     license = lib.licenses.mit;
-    mainProgram = "id-changer";
+    mainProgram = "metadata-editor";
     sourceProvenance = with lib.sourceTypes; [
       fromSource
     ];

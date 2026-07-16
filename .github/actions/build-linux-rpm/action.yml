@@ -1,4 +1,4 @@
-description: "Builds the id-checker project for RedHat Enterprise Linux family"
+description: "Builds the metadata-editor project for RedHat Enterprise Linux family"
 inputs:
   gpg-private-key:
     description: "GPG private key for signing"

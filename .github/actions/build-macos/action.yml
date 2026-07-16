@@ -1,4 +1,4 @@
-description: "Builds the id-checker project for macOS (Universal)"
+description: "Builds the metadata-editor project for macOS (Universal)"
 inputs:
   gpg-private-key:
     description: "GPG private key for signing"

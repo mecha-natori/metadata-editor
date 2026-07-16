@@ -1,5 +1,5 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 fn main() -> anyhow::Result<()> {
-    id_changer_lib::run()
+    metadata_editor_lib::run()
 }

@@ -1,4 +1,4 @@
-description: "Builds the id-checker project for ArchLinux"
+description: "Builds the metadata-editor project for ArchLinux"
 inputs:
   gpg_private_key:
     description: "GPG private key for signing"

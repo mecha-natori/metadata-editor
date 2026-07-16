@@ -1,4 +1,4 @@
-description: "Builds the id-checker project for Linux AppImage"
+description: "Builds the metadata-editor project for Linux AppImage"
 inputs:
   gpg-private-key:
     description: "GPG private key for signing"

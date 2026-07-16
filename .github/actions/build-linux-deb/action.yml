@@ -1,4 +1,4 @@
-description: "Builds the id-checker project for Debian GNU/Linux family"
+description: "Builds the metadata-editor project for Debian GNU/Linux family"
 inputs:
   gpg-private-key:
     description: "GPG private key for signing"

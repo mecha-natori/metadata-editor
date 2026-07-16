@@ -95,7 +95,7 @@ jobs:
       - name: "Upload artifact"
         uses: "actions/upload-artifact@v7"
         with:
-          name: "id-changer-${{ matrix.os }}"
+          name: "metadata-editor-${{ matrix.os }}"
           path: "./out/"
     strategy:
       fail-fast: false
@@ -138,7 +138,7 @@ jobs:
         with:
           merge-multiple: true
           path: "./out"
-          pattern: "id-changer-*"
+          pattern: "metadata-editor-*"
       - name: "Configure Git"
         run: |
           git config user.email \

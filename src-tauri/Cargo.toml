@@ -21,13 +21,13 @@ version = "2"
 
 [lib]
 crate-type = ["cdylib", "rlib", "staticlib"]
-name = "id_changer_lib"
+name = "metadata_editor_lib"
 
 [package]
 authors = ["Sora Tonami <ms0503@outlook.com>"]
-description = "Change CAN ID of circuit made by Mechatronics Lab"
+description = "Edit metadata of circuit made by Mechatronics Lab"
 edition = "2024"
-name = "id-changer"
+name = "metadata-editor"
 resolver = "3"
 version = "0.1.0"
 
