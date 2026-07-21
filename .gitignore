@@ -9,13 +9,13 @@
 .pre-commit-config.yaml
 .vite/
 .vscode/
+/result*
 dist/
 lerna-debug.log*
 logs/
 node_modules/
 npm-debug.log*
 pnpm-debug.log*
-result*
 target/
 
 !.env.example

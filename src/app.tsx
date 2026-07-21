@@ -1,13 +1,9 @@
+import { useResult } from './hooks/result';
 import { getAllBoardNames, getBoard } from '@/lib/boards';
 import { invoke } from '@tauri-apps/api/core';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { z } from 'zod';
 import type { JSX, SubmitEvent } from 'react';
-
-type Result =
-    | { message: string; status: 'error' }
-    | { status: 'initial' }
-    | { status: 'ok' };
 
 const formSchema = z
     .object({
@@ -32,39 +28,39 @@ const formSchema = z
     });
 
 export function App(): JSX.Element {
-    const [result, setResult] = useState<Result>({ status: 'initial' });
+    const { ShowResult, result, setError, setOk } = useResult();
     const boards = getAllBoardNames();
-    const handleSubmit = useCallback((e: SubmitEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const formData = formSchema.safeParse(
-            Object.fromEntries(new FormData(e.target))
-        );
-        if (!formData.success) {
-            setResult({
-                message: formData.error.issues
-                    .map(issue => issue.message)
-                    .join('\n'),
-                status: 'error'
-            });
-            return;
-        }
-        const { board, id } = formData.data;
-        invoke('change', {
-            bankBase: board.bank.base,
-            bankLength: board.bank.length,
-            canAddr: id,
-            chipFamily: board.chip.family,
-            chipName: board.chip.name
-        })
-            .then(() => {
-                setResult({ status: 'ok' });
+    const handleSubmit = useCallback(
+        (e: SubmitEvent<HTMLFormElement>) => {
+            e.preventDefault();
+            const formData = formSchema.safeParse(
+                Object.fromEntries(new FormData(e.target))
+            );
+            if (!formData.success) {
+                setError(
+                    formData.error.issues.map(issue => issue.message).join('\n')
+                );
+                return;
+            }
+            const { board, id } = formData.data;
+            invoke('change', {
+                bankBase: board.bank.base,
+                bankLength: board.bank.length,
+                canAddr: id,
+                chipFamily: board.chip.family,
+                chipName: board.chip.name
             })
-            // oxlint-disable-next-line promise/prefer-await-to-callbacks
-            .catch((err: unknown) => {
-                // oxlint-disable-next-line typescript/consistent-type-assertions typescript/no-unsafe-type-assertion
-                setResult({ message: err as string, status: 'error' });
-            });
-    }, []);
+                .then(() => {
+                    setOk('IDの書き換えに成功しました！');
+                })
+                // oxlint-disable-next-line promise/prefer-await-to-callbacks
+                .catch((err: unknown) => {
+                    // oxlint-disable-next-line typescript/consistent-type-assertions typescript/no-unsafe-type-assertion
+                    setError(err as string);
+                });
+        },
+        [setError, setOk]
+    );
     return (
         <div className="flex h-screen w-screen flex-col items-center justify-center">
             <h1>基板IDチェンジャー</h1>
@@ -125,29 +121,4 @@ export function App(): JSX.Element {
             </form>
         </div>
     );
-}
-
-interface ShowResultProps {
-    result: Result;
-}
-
-function ShowResult({ result }: ShowResultProps): JSX.Element | null {
-    switch (result.status) {
-        case 'error':
-            return (
-                <div className="rounded-lg border border-(--border-error) bg-(--background-error) px-4 py-2">
-                    {result.message}
-                </div>
-            );
-        case 'initial':
-            return null;
-        case 'ok':
-            return (
-                <div className="rounded-lg border border-(--border-success) bg-(--background-success) px-4 py-2">
-                    IDが正常に書き換えられました！
-                </div>
-            );
-        default:
-            throw new Error('unreachable code');
-    }
 }
