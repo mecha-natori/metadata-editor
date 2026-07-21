@@ -10,17 +10,24 @@
             "additionalProperties": {
                 "additionalProperties": false,
                 "properties": {
-                    "bank": {
-                        "additionalProperties": false,
-                        "properties": {
-                            "base": {
-                                "type": "integer"
+                    "banks": {
+                        "items": {
+                            "additionalProperties": false,
+                            "properties": {
+                                "base": {
+                                    "type": "integer"
+                                },
+                                "length": {
+                                    "type": "integer"
+                                }
                             },
-                            "length": {
-                                "type": "integer"
-                            }
+                            "required": [
+                                "base",
+                                "length"
+                            ],
+                            "type": "object"
                         },
-                        "type": "object"
+                        "type": "array"
                     },
                     "chip": {
                         "additionalProperties": false,
@@ -35,9 +42,17 @@
                                 "type": "string"
                             }
                         },
+                        "required": [
+                            "family",
+                            "name"
+                        ],
                         "type": "object"
                     }
                 },
+                "required": [
+                    "banks",
+                    "chip"
+                ],
                 "type": "object"
             },
             "type": "object"

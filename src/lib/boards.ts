@@ -3,7 +3,7 @@ import boardsFile from '@/boards.json';
 const { boards } = boardsFile;
 
 export interface Board {
-    bank: { base: number; length: number };
+    banks: Array<{ base: number; length: number }>;
     chip: { family: 'esp32' | 'stm32'; name: string };
 }
 
