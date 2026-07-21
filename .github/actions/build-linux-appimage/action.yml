@@ -1,26 +1,26 @@
-description: "Builds the metadata-editor project for Linux AppImage"
+description: 'Builds the metadata-editor project for Linux AppImage'
 inputs:
   gpg-private-key:
-    description: "GPG private key for signing"
+    description: 'GPG private key for signing'
     required: true
   gpg-private-key-passphrase:
-    description: "Passphrase of GPG private key for signing"
+    description: 'Passphrase of GPG private key for signing'
     required: true
   gpg-sign-key:
-    description: "GPG key id for signing"
+    description: 'GPG key id for signing'
     required: true
-name: "Build for Linux AppImage"
+name: 'Build for Linux AppImage'
 outputs:
   version:
-    description: "App version"
-    value: "${{ steps.version.outputs.value }}"
+    description: 'App version'
+    value: '${{ steps.version.outputs.value }}'
 runs:
   steps:
     - env:
-        GPG_PRIVATE_KEY: "${{ inputs.gpg-private-key }}"
-        GPG_PRIVATE_KEY_PASSPHRASE: "${{ inputs.gpg-private-key-passphrase }}"
-      name: "Import GPG key"
-      shell: "bash"
+        GPG_PRIVATE_KEY: '${{ inputs.gpg-private-key }}'
+        GPG_PRIVATE_KEY_PASSPHRASE: '${{ inputs.gpg-private-key-passphrase }}'
+      name: 'Import GPG key'
+      shell: 'bash'
       run: |
         gpg \
           --batch \
@@ -31,8 +31,8 @@ runs:
           --yes \
           <<<"$GPG_PRIVATE_KEY" \
           3<<<"$GPG_PRIVATE_KEY_PASSPHRASE"
-    - name: "Install Tauri dependencies"
-      shell: "bash"
+    - name: 'Install Tauri dependencies'
+      shell: 'bash'
       run: |
         sudo apt-get update
         sudo apt-get install -y --no-install-recommends --no-install-suggests \
@@ -41,45 +41,45 @@ runs:
           librsvg2-dev \
           libwebkit2gtk-4.1-dev \
           mold
-    - name: "Install pnpm"
-      uses: "pnpm/action-setup@v6"
-    - name: "Setup Node.js"
-      uses: "actions/setup-node@v6"
+    - name: 'Install pnpm'
+      uses: 'pnpm/action-setup@v6'
+    - name: 'Setup Node.js'
+      uses: 'actions/setup-node@v6'
       with:
-        cache: "pnpm"
+        cache: 'pnpm'
         node-version: 26
-    - name: "Setup latest Rust toolchain"
-      uses: "dtolnay/rust-toolchain@nightly"
+    - name: 'Setup latest Rust toolchain'
+      uses: 'dtolnay/rust-toolchain@nightly'
       with:
-        targets: "x86_64-unknown-linux-gnu"
-    - name: "Install frontend dependencies"
-      shell: "bash"
-      run: "pnpm ci"
-    - name: "Install backend dependencies"
-      shell: "bash"
-      run: "cargo fetch"
-    - id: "product-name"
-      name: "Get product name"
-      uses: "SebRollen/toml-action@v1.2.0"
+        targets: 'x86_64-unknown-linux-gnu'
+    - name: 'Install frontend dependencies'
+      shell: 'bash'
+      run: 'pnpm ci'
+    - name: 'Install backend dependencies'
+      shell: 'bash'
+      run: 'cargo fetch'
+    - id: 'product-name'
+      name: 'Get product name'
+      uses: 'SebRollen/toml-action@v1.2.0'
       with:
-        field: "productName"
-        file: "src-tauri/Tauri.toml"
-    - id: "version"
-      name: "Get version"
-      uses: "SebRollen/toml-action@v1.2.0"
+        field: 'productName'
+        file: 'src-tauri/Tauri.toml'
+    - id: 'version'
+      name: 'Get version'
+      uses: 'SebRollen/toml-action@v1.2.0'
       with:
-        field: "package.version"
-        file: "src-tauri/Cargo.toml"
+        field: 'package.version'
+        file: 'src-tauri/Cargo.toml'
     - env:
-        APPIMAGETOOL_FORCE_SIGN: "1"
+        APPIMAGETOOL_FORCE_SIGN: '1'
         APPIMAGETOOL_SIGN_PASSPHRASE: >-
           ${{ inputs.gpg-private-key-passphrase }}
-        RUSTFLAGS: "-Clink-arg=-fuse-ld=mold"
-        SIGN: "1"
-        SIGN_KEY: "${{ inputs.gpg-sign-key }}"
-      id: "build"
-      name: "Build"
-      shell: "bash"
+        RUSTFLAGS: '-Clink-arg=-fuse-ld=mold'
+        SIGN: '1'
+        SIGN_KEY: '${{ inputs.gpg-sign-key }}'
+      id: 'build'
+      name: 'Build'
+      shell: 'bash'
       run: |
         pnpm tauri build -b appimage
         dir=$PWD/target/release/bundle/appimage
@@ -95,4 +95,4 @@ runs:
         fi
         mkdir out
         mv "$dir/$fullname.AppImage" "$GITHUB_WORKSPACE/out/$fullname.AppImage"
-  using: "composite"
+  using: 'composite'

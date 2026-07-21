@@ -13,12 +13,7 @@
     lib.optionalAttrs (inputs.treefmt-nix ? flakeModule) {
       treefmt = {
         programs = {
-          jsonfmt = {
-            enable = true;
-            excludes = [
-              "public/blog/feed.json"
-            ];
-          };
+          jsonfmt.enable = true;
           mdformat = {
             enable = true;
             plugins =
@@ -48,6 +43,14 @@
             indent_size = 4;
           };
           taplo.enable = true;
+          yamlfmt.enable = false;
+          yamllint = {
+            enable = true;
+            excludes = [
+              "pnpm-lock.yaml"
+              "pnpm-workspace.yaml"
+            ];
+          };
         };
         settings.formatter.jsonfmt =
           let

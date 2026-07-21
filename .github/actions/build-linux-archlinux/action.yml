@@ -1,21 +1,21 @@
-description: "Builds the metadata-editor project for ArchLinux"
+description: 'Builds the metadata-editor project for ArchLinux'
 inputs:
   gpg_private_key:
-    description: "GPG private key for signing"
+    description: 'GPG private key for signing'
     required: true
   gpg_private_key_passphrase:
-    description: "Passphrase of GPG private key for signing"
+    description: 'Passphrase of GPG private key for signing'
     required: true
   gpg_sign_key:
-    description: "GPG key id for signing"
+    description: 'GPG key id for signing'
     required: true
   gpg_sign_key_keygrip:
-    description: "Keygrip of GPG key for signing"
+    description: 'Keygrip of GPG key for signing'
     required: true
-name: "Build for ArchLinux"
+name: 'Build for ArchLinux'
 outputs:
   version:
-    description: "App version"
+    description: 'App version'
 runs:
-  image: "Dockerfile"
-  using: "docker"
+  image: 'Dockerfile'
+  using: 'docker'

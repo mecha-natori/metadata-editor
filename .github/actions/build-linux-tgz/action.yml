@@ -1,29 +1,29 @@
-description: "Builds the metadata-editor project for Linux"
+description: 'Builds the metadata-editor project for Linux'
 inputs:
   gpg-private-key:
-    description: "GPG private key for signing"
+    description: 'GPG private key for signing'
     required: true
   gpg-private-key-passphrase:
-    description: "Passphrase of GPG private key for signing"
+    description: 'Passphrase of GPG private key for signing'
     required: true
   gpg-sign-key:
-    description: "GPG key id for signing"
+    description: 'GPG key id for signing'
     required: true
   token:
-    description: "GitHub Token"
+    description: 'GitHub Token'
     required: true
-name: "Build for Linux"
+name: 'Build for Linux'
 outputs:
   version:
-    description: "App version"
-    value: "${{ steps.version.outputs.value }}"
+    description: 'App version'
+    value: '${{ steps.version.outputs.value }}'
 runs:
   steps:
     - env:
-        GPG_PRIVATE_KEY: "${{ inputs.gpg-private-key }}"
-        GPG_PRIVATE_KEY_PASSPHRASE: "${{ inputs.gpg-private-key-passphrase }}"
-      name: "Import GPG key"
-      shell: "bash"
+        GPG_PRIVATE_KEY: '${{ inputs.gpg-private-key }}'
+        GPG_PRIVATE_KEY_PASSPHRASE: '${{ inputs.gpg-private-key-passphrase }}'
+      name: 'Import GPG key'
+      shell: 'bash'
       run: |
         gpg \
           --batch \
@@ -34,8 +34,8 @@ runs:
           --yes \
           <<<"$GPG_PRIVATE_KEY" \
           3<<<"$GPG_PRIVATE_KEY_PASSPHRASE"
-    - name: "Remove unused tools"
-      shell: "bash"
+    - name: 'Remove unused tools'
+      shell: 'bash'
       run: |
         sudo rm -rf \
           "$AGENT_TOOLSDIRECTORY" \
@@ -214,32 +214,32 @@ runs:
         sudo dpkg -r packages-microsoft-prod &>/dev/null || true
         sudo apt-get autoremove -y &>/dev/null || true
         sudo apt-get autoclean -y &>/dev/null || true
-    - name: "Install Nix"
-      uses: "cachix/install-nix-action@v31"
+    - name: 'Install Nix'
+      uses: 'cachix/install-nix-action@v31'
       with:
         extra_nix_config: |
           accept-flake-config = true
           experimental-features = flakes nix-command pipe-operators
-        github_access_token: "${{ inputs.token }}"
-        nix_path: "nixpkgs=channel:nixos-unstable"
-    - id: "product-name"
-      name: "Get product name"
-      uses: "SebRollen/toml-action@v1.2.0"
+        github_access_token: '${{ inputs.token }}'
+        nix_path: 'nixpkgs=channel:nixos-unstable'
+    - id: 'product-name'
+      name: 'Get product name'
+      uses: 'SebRollen/toml-action@v1.2.0'
       with:
-        field: "productName"
-        file: "src-tauri/Tauri.toml"
-    - id: "version"
-      name: "Get version"
-      uses: "SebRollen/toml-action@v1.2.0"
+        field: 'productName'
+        file: 'src-tauri/Tauri.toml'
+    - id: 'version'
+      name: 'Get version'
+      uses: 'SebRollen/toml-action@v1.2.0'
       with:
-        field: "package.version"
-        file: "src-tauri/Cargo.toml"
+        field: 'package.version'
+        file: 'src-tauri/Cargo.toml'
     - env:
-        GPG_PRIVATE_KEY_PASSPHRASE: "${{ inputs.gpg-private-key-passphrase }}"
-        GPG_SIGN_KEY: "${{ inputs.gpg-sign-key }}"
-      id: "build"
-      name: "Build"
-      shell: "bash"
+        GPG_PRIVATE_KEY_PASSPHRASE: '${{ inputs.gpg-private-key-passphrase }}'
+        GPG_SIGN_KEY: '${{ inputs.gpg-sign-key }}'
+      id: 'build'
+      name: 'Build'
+      shell: 'bash'
       run: |
         mkdir out
         out=$(nix build --json --no-link | jq -r '.[0].outputs.out')
@@ -259,4 +259,4 @@ runs:
           --yes \
           "$GITHUB_WORKSPACE/out/$fullname.tar.gz" \
           <<<"$GPG_PRIVATE_KEY_PASSPHRASE"
-  using: "composite"
+  using: 'composite'

@@ -1,47 +1,47 @@
 jobs:
   check:
     outputs:
-      sync-needed: "${{ steps.check.outputs.sync-needed }}"
-      version: "${{ steps.check.outputs.version }}"
+      sync-needed: '${{ steps.check.outputs.sync-needed }}'
+      version: '${{ steps.check.outputs.version }}'
     permissions:
-      contents: "read"
-    runs-on: "ubuntu-24.04"
+      contents: 'read'
+    runs-on: 'ubuntu-24.04'
     steps:
-      - name: "Checkout repository"
-        uses: "actions/checkout@v6"
-      - id: "check"
-        name: "Check"
-        uses: "./.github/actions/check-pkgbuild"
+      - name: 'Checkout repository'
+        uses: 'actions/checkout@v6'
+      - id: 'check'
+        name: 'Check'
+        uses: './.github/actions/check-pkgbuild'
         with:
-          cargoToml: "src-tauri/Cargo.toml"
-          makepkgConf: "src-tauri/bundle/archlinux/makepkg.conf"
-          pkgdir: "src-tauri/bundle/archlinux"
+          cargoToml: 'src-tauri/Cargo.toml'
+          makepkgConf: 'src-tauri/bundle/archlinux/makepkg.conf'
+          pkgdir: 'src-tauri/bundle/archlinux'
   sync:
-    if: "fromJSON(needs.check.outputs.sync-needed)"
-    needs: "check"
+    if: 'fromJSON(needs.check.outputs.sync-needed)'
+    needs: 'check'
     permissions:
-      contents: "write"
-    runs-on: "ubuntu-24.04"
+      contents: 'write'
+    runs-on: 'ubuntu-24.04'
     steps:
-      - name: "Checkout repository"
-        uses: "actions/checkout@v6"
+      - name: 'Checkout repository'
+        uses: 'actions/checkout@v6'
         with:
           fetch-depth: 0
-      - name: "Configure Git"
+      - name: 'Configure Git'
         run: |
           git config user.email \
             "41898282+github-actions[bot]@users.noreply.github.com"
           git config user.name "github-actions[bot]"
-      - name: "Sync"
+      - name: 'Sync'
         run: |
           ver="${{ needs.check.outputs.version }}"
           cd ./src-tauri/bundle/archlinux
           sed -i 's/^pkgver=[^ ]\+/pkgver='\'"$ver"\''/' PKGBUILD
-      - name: "Generate .SRCINFO"
-        uses: "./.github/actions/generate-srcinfo"
+      - name: 'Generate .SRCINFO'
+        uses: './.github/actions/generate-srcinfo'
         with:
-          makepkgConf: "src-tauri/bundle/archlinux/makepkg.conf"
-          pkgdir: "src-tauri/bundle/archlinux"
+          makepkgConf: 'src-tauri/bundle/archlinux/makepkg.conf'
+          pkgdir: 'src-tauri/bundle/archlinux'
       - env:
           BRANCH: >-
             ${{
@@ -49,12 +49,12 @@ jobs:
               && github.head_ref
               || github.ref_name
             }}
-        name: "Push"
+        name: 'Push'
         run: |
           git add ./src-tauri/bundle/archlinux/{PKGBUILD,.SRCINFO}
           git commit -m "chore: ArchLinux向けパッケージ定義を更新"
           git push origin "refs/heads/$BRANCH"
-name: "Sync PKGBUILD"
+name: 'Sync PKGBUILD'
 on:
   pull_request:
   push:

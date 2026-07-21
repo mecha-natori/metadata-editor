@@ -1,23 +1,23 @@
-description: "Generates .SRCINFO file"
+description: 'Generates .SRCINFO file'
 inputs:
   cargoToml:
-    default: "src-tauri/Cargo.toml"
-    description: "File path to Cargo.toml"
+    default: 'src-tauri/Cargo.toml'
+    description: 'File path to Cargo.toml'
     required: false
   makepkgConf:
-    default: "makepkg.conf"
-    description: "File path to makepkg.conf"
+    default: 'makepkg.conf'
+    description: 'File path to makepkg.conf'
     required: false
   pkgdir:
-    default: "."
-    description: "Directory path that contains PKGBUILD file"
+    default: '.'
+    description: 'Directory path that contains PKGBUILD file'
     required: false
-name: "Generate .SRCINFO"
+name: 'Generate .SRCINFO'
 outputs:
   sync-needed:
-    description: "Whether to need to sync"
+    description: 'Whether to need to sync'
   version:
-    description: "Actual version"
+    description: 'Actual version'
 runs:
-  image: "Dockerfile"
-  using: "docker"
+  image: 'Dockerfile'
+  using: 'docker'

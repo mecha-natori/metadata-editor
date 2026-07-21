@@ -136,7 +136,7 @@
               myLib = ms0503-lib.lib;
               nodejs-slim = pkgs.nodejs-slim_26;
               pnpm = pkgs.pnpm_11;
-              pnpmDepsHash = "sha256-wInoSEQQ//SNK1kroWwpFt46+paiQe0AdIbsW/5mCsE=";
+              pnpmDepsHash = "sha256-9EEPa66T7OoO+hVMn2Lue/FQ+FWCDyGmZlupv8g3RJ8=";
             };
         };
       systems = import systems;

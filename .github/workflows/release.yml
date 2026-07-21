@@ -22,145 +22,145 @@ jobs:
           )
         }}
     permissions:
-      contents: "read"
-    runs-on: "${{ matrix.host }}"
+      contents: 'read'
+    runs-on: '${{ matrix.host }}'
     steps:
-      - name: "Checkout repository"
-        uses: "actions/checkout@v6"
-      - id: "build-linux-appimage"
+      - name: 'Checkout repository'
+        uses: 'actions/checkout@v6'
+      - id: 'build-linux-appimage'
         if: "matrix.os == 'linux-appimage'"
-        name: "Build"
-        uses: "./.github/actions/build-linux-appimage"
+        name: 'Build'
+        uses: './.github/actions/build-linux-appimage'
         with:
-          gpg-private-key: "${{ secrets.GPG_PRIVATE_KEY }}"
+          gpg-private-key: '${{ secrets.GPG_PRIVATE_KEY }}'
           gpg-private-key-passphrase: >-
             ${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
-          gpg-sign-key: "${{ vars.GPG_SIGN_KEY }}"
-      - id: "build-linux-archlinux"
+          gpg-sign-key: '${{ vars.GPG_SIGN_KEY }}'
+      - id: 'build-linux-archlinux'
         if: "matrix.os == 'linux-archlinux'"
-        name: "Build"
-        uses: "./.github/actions/build-linux-archlinux"
+        name: 'Build'
+        uses: './.github/actions/build-linux-archlinux'
         with:
-          gpg_private_key: "${{ secrets.GPG_PRIVATE_KEY }}"
+          gpg_private_key: '${{ secrets.GPG_PRIVATE_KEY }}'
           gpg_private_key_passphrase: >-
             ${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
-          gpg_sign_key: "${{ vars.GPG_SIGN_KEY }}"
-          gpg_sign_key_keygrip: "${{ vars.GPG_SIGN_KEY_KEYGRIP }}"
-      - id: "build-linux-deb"
+          gpg_sign_key: '${{ vars.GPG_SIGN_KEY }}'
+          gpg_sign_key_keygrip: '${{ vars.GPG_SIGN_KEY_KEYGRIP }}'
+      - id: 'build-linux-deb'
         if: "matrix.os == 'linux-deb'"
-        name: "Build"
-        uses: "./.github/actions/build-linux-deb"
+        name: 'Build'
+        uses: './.github/actions/build-linux-deb'
         with:
-          gpg-private-key: "${{ secrets.GPG_PRIVATE_KEY }}"
+          gpg-private-key: '${{ secrets.GPG_PRIVATE_KEY }}'
           gpg-private-key-passphrase: >-
             ${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
-          gpg-sign-key: "${{ vars.GPG_SIGN_KEY }}"
-      - id: "build-linux-rpm"
+          gpg-sign-key: '${{ vars.GPG_SIGN_KEY }}'
+      - id: 'build-linux-rpm'
         if: "matrix.os == 'linux-rpm'"
-        name: "Build"
-        uses: "./.github/actions/build-linux-rpm"
+        name: 'Build'
+        uses: './.github/actions/build-linux-rpm'
         with:
-          gpg-private-key: "${{ secrets.GPG_PRIVATE_KEY }}"
+          gpg-private-key: '${{ secrets.GPG_PRIVATE_KEY }}'
           gpg-private-key-passphrase: >-
             ${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
-          gpg-sign-key: "${{ vars.GPG_SIGN_KEY }}"
-      - id: "build-linux-tgz"
+          gpg-sign-key: '${{ vars.GPG_SIGN_KEY }}'
+      - id: 'build-linux-tgz'
         if: "matrix.os == 'linux-tgz'"
-        name: "Build"
-        uses: "./.github/actions/build-linux-tgz"
+        name: 'Build'
+        uses: './.github/actions/build-linux-tgz'
         with:
-          gpg-private-key: "${{ secrets.GPG_PRIVATE_KEY }}"
+          gpg-private-key: '${{ secrets.GPG_PRIVATE_KEY }}'
           gpg-private-key-passphrase: >-
             ${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
-          gpg-sign-key: "${{ vars.GPG_SIGN_KEY }}"
-          token: "${{ secrets.GITHUB_TOKEN }}"
-      - id: "build-macos"
+          gpg-sign-key: '${{ vars.GPG_SIGN_KEY }}'
+          token: '${{ secrets.GITHUB_TOKEN }}'
+      - id: 'build-macos'
         if: "matrix.os == 'macos'"
-        name: "Build"
-        uses: "./.github/actions/build-macos"
+        name: 'Build'
+        uses: './.github/actions/build-macos'
         with:
-          gpg-private-key: "${{ secrets.GPG_PRIVATE_KEY }}"
+          gpg-private-key: '${{ secrets.GPG_PRIVATE_KEY }}'
           gpg-private-key-passphrase: >-
             ${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
-          gpg-sign-key: "${{ vars.GPG_SIGN_KEY }}"
-      - id: "build-windows"
+          gpg-sign-key: '${{ vars.GPG_SIGN_KEY }}'
+      - id: 'build-windows'
         if: "matrix.os == 'windows'"
-        name: "Build"
-        uses: "./.github/actions/build-windows"
+        name: 'Build'
+        uses: './.github/actions/build-windows'
         with:
-          gpg-private-key: "${{ secrets.GPG_PRIVATE_KEY }}"
+          gpg-private-key: '${{ secrets.GPG_PRIVATE_KEY }}'
           gpg-private-key-passphrase: >-
             ${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
-          gpg-sign-key: "${{ vars.GPG_SIGN_KEY }}"
-      - name: "Upload artifact"
-        uses: "actions/upload-artifact@v7"
+          gpg-sign-key: '${{ vars.GPG_SIGN_KEY }}'
+      - name: 'Upload artifact'
+        uses: 'actions/upload-artifact@v7'
         with:
-          name: "metadata-editor-${{ matrix.os }}"
-          path: "./out/"
+          name: 'metadata-editor-${{ matrix.os }}'
+          path: './out/'
     strategy:
       fail-fast: false
       matrix:
         include:
-          - host: "ubuntu-24.04"
-            os: "linux-appimage"
-          - host: "ubuntu-24.04"
-            os: "linux-archlinux"
-          - host: "ubuntu-24.04"
-            os: "linux-deb"
-          - host: "ubuntu-24.04"
-            os: "linux-rpm"
-          - host: "ubuntu-24.04"
-            os: "linux-tgz"
-          - host: "macos-26"
-            os: "macos"
-          - host: "windows-2025-vs2026"
-            os: "windows"
+          - host: 'ubuntu-24.04'
+            os: 'linux-appimage'
+          - host: 'ubuntu-24.04'
+            os: 'linux-archlinux'
+          - host: 'ubuntu-24.04'
+            os: 'linux-deb'
+          - host: 'ubuntu-24.04'
+            os: 'linux-rpm'
+          - host: 'ubuntu-24.04'
+            os: 'linux-tgz'
+          - host: 'macos-26'
+            os: 'macos'
+          - host: 'windows-2025-vs2026'
+            os: 'windows'
         os:
-          - "linux-appimage"
-          - "linux-archlinux"
-          - "linux-deb"
-          - "linux-rpm"
-          - "linux-tgz"
-          - "macos"
-          - "windows"
+          - 'linux-appimage'
+          - 'linux-archlinux'
+          - 'linux-deb'
+          - 'linux-rpm'
+          - 'linux-tgz'
+          - 'macos'
+          - 'windows'
   release:
-    needs: "build"
+    needs: 'build'
     permissions:
-      contents: "write"
-    runs-on: "ubuntu-24.04"
+      contents: 'write'
+    runs-on: 'ubuntu-24.04'
     steps:
-      - name: "Checkout repository"
-        uses: "actions/checkout@v6"
+      - name: 'Checkout repository'
+        uses: 'actions/checkout@v6'
         with:
           fetch-depth: 0
-      - name: "Get artifacts"
-        uses: "actions/download-artifact@v8"
+      - name: 'Get artifacts'
+        uses: 'actions/download-artifact@v8'
         with:
           merge-multiple: true
-          path: "./out"
-          pattern: "metadata-editor-*"
-      - name: "Configure Git"
+          path: './out'
+          pattern: 'metadata-editor-*'
+      - name: 'Configure Git'
         run: |
           git config user.email \
             "41898282+github-actions[bot]@users.noreply.github.com"
           git config user.name "github-actions[bot]"
-      - id: "description"
-        name: "Prepare release description"
+      - id: 'description'
+        name: 'Prepare release description'
         run: |
           d=$(cat RELEASE.md)
           d=${d//'%'/'%25'}
           d=${d//$'\n'/'%0A'}
           d=${d//$'\r'/'%0D'}
           echo "description=$d" >>"$GITHUB_OUTPUT"
-      - name: "Create release"
-        uses: "svenstaro/upload-release-action@v2"
+      - name: 'Create release'
+        uses: 'svenstaro/upload-release-action@v2'
         with:
-          body: "${{ steps.description.outputs.description }}"
-          file: "./out/*"
+          body: '${{ steps.description.outputs.description }}'
+          file: './out/*'
           file_glob: true
-          release_name: "基板IDチェンジャー v${{ needs.build.outputs.version }}"
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          tag: "${{ needs.build.outputs.version }}"
-name: "Build and Release"
+          release_name: '基板IDチェンジャー v${{ needs.build.outputs.version }}'
+          repo_token: '${{ secrets.GITHUB_TOKEN }}'
+          tag: '${{ needs.build.outputs.version }}'
+name: 'Build and Release'
 on:
   workflow_dispatch:

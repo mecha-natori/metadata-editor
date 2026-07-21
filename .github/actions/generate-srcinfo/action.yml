@@ -1,14 +1,14 @@
-description: "Generates .SRCINFO file"
+description: 'Generates .SRCINFO file'
 inputs:
   makepkgConf:
-    default: "makepkg.conf"
-    description: "File path to makepkg.conf"
+    default: 'makepkg.conf'
+    description: 'File path to makepkg.conf'
     required: false
   pkgdir:
-    default: "."
-    description: "Directory path that contains PKGBUILD file"
+    default: '.'
+    description: 'Directory path that contains PKGBUILD file'
     required: false
-name: "Generate .SRCINFO"
+name: 'Generate .SRCINFO'
 runs:
-  image: "Dockerfile"
-  using: "docker"
+  image: 'Dockerfile'
+  using: 'docker'
