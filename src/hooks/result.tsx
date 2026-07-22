@@ -2,12 +2,12 @@ import { useCallback, useState } from 'react';
 import type { JSX } from 'react';
 
 export const Result = {
-    Error: (message: string) => ({ message, status: 'error' } as const),
-    Initial: () => ({ status: 'initial' } as const),
-    Ok: (message?: string) => ({ message, status: 'ok' } as const)
+    Error: (message: string) => ({ message, status: 'error' }) as const,
+    Initial: () => ({ status: 'initial' }) as const,
+    Ok: (message?: string) => ({ message, status: 'ok' }) as const
 } as const;
 
-export type Result = ReturnType<typeof Result[keyof typeof Result]>;
+export type Result = ReturnType<(typeof Result)[keyof typeof Result]>;
 
 export interface UseResultResult {
     ShowResult: typeof ShowResult;
@@ -24,12 +24,7 @@ export function useResult(): UseResultResult {
     const setOk = useCallback((message?: string) => {
         setResult(Result.Ok(message));
     }, []);
-    return {
-        ShowResult,
-        result,
-        setError,
-        setOk
-    };
+    return { ShowResult, result, setError, setOk };
 }
 
 interface ShowResultProps {
