@@ -24,8 +24,8 @@ importers:
         specifier: ^19.2.7
         version: 19.2.7(react@19.2.7)
       zod:
-        specifier: ^4.4.3
-        version: 4.4.3
+        specifier: jsr:@zod/zod@^4.4.3
+        version: '@jsr/zod__zod@4.4.3'
     devDependencies:
       '@ms0503/oxc-config':
         specifier: jsr:@ms0503/oxc-config@^0.6.3
@@ -181,6 +181,9 @@ packages:
 
   '@jsr/ms0503__oxc-config@0.6.3':
     resolution: {integrity: sha512-M0xA+jn5mSJpayluiT8DeuXuuKh74FhWn0rO+2oNCOA5hjFO3y53OTTR/2RHPJgNsdzlR75mYqKLsghRD/bDIQ==, tarball: https://npm.jsr.io/~/11/@jsr/ms0503__oxc-config/0.6.3.tgz}
+
+  '@jsr/zod__zod@4.4.3':
+    resolution: {integrity: sha512-MSBpUXksX0So5K6mU8QCt1kNBZ8Dkd6IoTMCqrra8ED0U2RM9eqRrM7IJMgcVJMYoDMaZyhOIPgY+ZVEJI5Y9w==, tarball: https://npm.jsr.io/~/11/@jsr/zod__zod/4.4.3.tgz}
 
   '@keyv/bigmap@1.3.1':
     resolution: {integrity: sha512-WbzE9sdmQtKy8vrNPa9BRnwZh5UF4s1KTmSK0KUVLo3eff5BlQNNWDnFOouNpKfPKDnms9xynJjsMYjMaT/aFQ==}
@@ -2094,9 +2097,6 @@ packages:
     resolution: {integrity: sha512-OTIk8iR8/aCRWBqvxrzxR0hgxWpnYBblY1S5hDWBQfk/VFmJwzmJgQFN3WsoUKHISv2eAwe+PpbUzyL1CKTLXg==}
     engines: {node: ^20.17.0 || >=22.9.0}
 
-  zod@4.4.3:
-    resolution: {integrity: sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ==}
-
 snapshots:
 
   '@babel/code-frame@7.29.7':
@@ -2190,6 +2190,8 @@ snapshots:
       - oxlint-tsgolint
       - svelte
       - vite-plus
+
+  '@jsr/zod__zod@4.4.3': {}
 
   '@keyv/bigmap@1.3.1(keyv@5.6.0)':
     dependencies:
@@ -3955,5 +3957,3 @@ snapshots:
   write-file-atomic@7.0.1:
     dependencies:
       signal-exit: 4.1.0
-
-  zod@4.4.3: {}
