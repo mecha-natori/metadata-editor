@@ -1,10 +1,10 @@
 import { useCallback, useState } from 'react';
-import type { JSX } from 'react';
+import type { JSX, ReactNode } from 'react';
 
 export const Result = {
-    Error: (message: string) => ({ message, status: 'error' }) as const,
+    Error: (message: ReactNode) => ({ message, status: 'error' }) as const,
     Initial: () => ({ status: 'initial' }) as const,
-    Ok: (message?: string) => ({ message, status: 'ok' }) as const
+    Ok: (message?: ReactNode) => ({ message, status: 'ok' }) as const
 } as const;
 
 export type Result = ReturnType<(typeof Result)[keyof typeof Result]>;
@@ -12,16 +12,16 @@ export type Result = ReturnType<(typeof Result)[keyof typeof Result]>;
 export interface UseResultResult {
     ShowResult: typeof ShowResult;
     result: Result;
-    setError: (message: string) => void;
-    setOk: (message?: string) => void;
+    setError: (message: ReactNode) => void;
+    setOk: (message?: ReactNode) => void;
 }
 
 export function useResult(): UseResultResult {
     const [result, setResult] = useState<Result>(Result.Initial());
-    const setError = useCallback((message: string) => {
+    const setError = useCallback((message: ReactNode) => {
         setResult(Result.Error(message));
     }, []);
-    const setOk = useCallback((message?: string) => {
+    const setOk = useCallback((message?: ReactNode) => {
         setResult(Result.Ok(message));
     }, []);
     return { ShowResult, result, setError, setOk };
