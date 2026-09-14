@@ -1,33 +1,33 @@
 {
     "dependencies": {
         "@tauri-apps/api": "^2.11.1",
-        "react": "^19.2.7",
-        "react-dom": "^19.2.7",
-        "zod": "jsr:@zod/zod@^4.4.3"
+        "react": "^19.2.8",
+        "react-dom": "^19.2.8",
+        "zod": "jsr:@zod/zod@^4.5.4"
     },
     "devDependencies": {
-        "@ms0503/oxc-config": "jsr:@ms0503/oxc-config@^0.6.3",
-        "@tailwindcss/language-server": "^0.14.29",
-        "@tailwindcss/vite": "^4.3.2",
+        "@ms0503/oxc-config": "jsr:^0.6.3",
+        "@tailwindcss/language-server": "^0.16.0",
+        "@tailwindcss/vite": "^4.3.3",
         "@tauri-apps/cli": "^2.11.4",
-        "@types/node": "^26.1.1",
-        "@types/react": "^19.2.17",
-        "@types/react-dom": "^19.2.3",
-        "@vitejs/plugin-react": "^6.0.3",
-        "globals": "^17.7.0",
-        "lightningcss": "^1.32.0",
+        "@types/node": "^26.4.1",
+        "@types/react": "^19.2.18",
+        "@types/react-dom": "^19.2.7",
+        "@vitejs/plugin-react": "^6.1.1",
+        "globals": "^17.12.0",
+        "lightningcss": "^1.33.0",
         "npm-run-all": "^4.1.5",
-        "oxfmt": "^0.59.0",
-        "oxlint": "^1.74.0",
-        "oxlint-tsgolint": "^0.25.0",
+        "oxfmt": "^0.66.0",
+        "oxlint": "^1.81.0",
+        "oxlint-tsgolint": "^7.0.2001",
         "rimraf": "^6.1.3",
-        "stylelint": "^17.14.0",
+        "stylelint": "^17.15.0",
         "stylelint-config-standard": "^40.0.0",
         "stylelint-declaration-block-no-ignored-properties": "^3.0.0",
         "stylelint-order": "^8.1.1",
-        "tailwindcss": "^4.3.2",
+        "tailwindcss": "^4.3.3",
         "typescript": "^7.0.2",
-        "vite": "^8.1.4"
+        "vite": "^8.2.2"
     },
     "engines": {
         "node": ">=26.0.0",
@@ -36,7 +36,7 @@
         "yarn": "use pnpm instead"
     },
     "name": "@mecha-natori/metadata-editor",
-    "packageManager": "pnpm@11.9.0",
+    "packageManager": "pnpm@11.25.0",
     "private": true,
     "scripts": {
         "build": "vite build",
