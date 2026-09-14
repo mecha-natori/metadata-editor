@@ -1,5 +1,5 @@
 use crate::ChipFamily;
-use crate::store::fat12::Fat12FileSystem;
+use std::io::Cursor;
 
 mod fat12;
 
@@ -18,8 +18,9 @@ pub fn format(
     if !length.is_multiple_of(512) {
         return Err("サイズは512B単位である必要があります。".into());
     }
-    let fs = Fat12FileSystem::new(root_entries, (length / 512) as u16);
-    let fs = fs.into_bytes();
-    crate::write(base_addr, fs, chip_family, chip_name)?;
+    let disk = vec![0u8; length as usize].into_boxed_slice();
+    let mut disk = Cursor::new(disk);
+    fat12::format(&mut disk, root_entries, (length / 512) as u16).map_err(|err| err.to_string())?;
+    crate::write(base_addr, disk.into_inner(), chip_family, chip_name)?;
     Ok(())
 }
