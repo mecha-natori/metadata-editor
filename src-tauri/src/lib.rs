@@ -11,7 +11,7 @@ mod store;
 pub fn run() -> anyhow::Result<()> {
     env_logger::init();
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![store::format])
+        .invoke_handler(tauri::generate_handler![])
         .run(tauri::generate_context!())?;
     Ok(())
 }
