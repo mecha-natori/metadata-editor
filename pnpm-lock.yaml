@@ -28,8 +28,8 @@ importers:
         version: '@jsr/zod__zod@4.5.4'
     devDependencies:
       '@ms0503/oxc-config':
-        specifier: jsr:^0.6.3
-        version: '@jsr/ms0503__oxc-config@0.6.3(oxlint-tsgolint@7.0.2001)'
+        specifier: jsr:^0.6.4
+        version: '@jsr/ms0503__oxc-config@0.6.4(oxlint-tsgolint@7.0.2001)'
       '@tailwindcss/language-server':
         specifier: ^0.16.0
         version: 0.16.0
@@ -170,8 +170,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
-  '@jsr/ms0503__oxc-config@0.6.3':
-    resolution: {integrity: sha512-M0xA+jn5mSJpayluiT8DeuXuuKh74FhWn0rO+2oNCOA5hjFO3y53OTTR/2RHPJgNsdzlR75mYqKLsghRD/bDIQ==, tarball: https://npm.jsr.io/~/11/@jsr/ms0503__oxc-config/0.6.3.tgz}
+  '@jsr/ms0503__oxc-config@0.6.4':
+    resolution: {integrity: sha512-wY7ok36yQ0Jzg506pndgHlTPRYgwC9EFhJtY55ZHiBcsw+BpkPbXnsyROEObrDHQa9ErfQPkl8rn0gNVLg6ScQ==, tarball: https://npm.jsr.io/~/11/@jsr/ms0503__oxc-config/0.6.4.tgz}
 
   '@jsr/zod__zod@4.5.4':
     resolution: {integrity: sha512-O5zGHGF0IUXhwfGfwKwIMYsfKZ2VrlEowzeERjOMcb4X1lzU5JlMA3nMzj4skqdKNCQZjn1J5QHsO0swRUB6Kw==, tarball: https://npm.jsr.io/~/11/@jsr/zod__zod/4.5.4.tgz}
@@ -2358,7 +2358,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.6.0
 
-  '@jsr/ms0503__oxc-config@0.6.3(oxlint-tsgolint@7.0.2001)':
+  '@jsr/ms0503__oxc-config@0.6.4(oxlint-tsgolint@7.0.2001)':
     dependencies:
       oxfmt: 0.59.0
       oxlint: 1.81.0(oxlint-tsgolint@7.0.2001)
