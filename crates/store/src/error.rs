@@ -3,9 +3,19 @@ use thiserror::Error;
 #[derive(Debug, Eq, Error, PartialEq)]
 pub enum StoreError {
     #[error(transparent)]
+    Edit(#[from] EditError),
+    #[error(transparent)]
     Parse(#[from] ParseError),
     #[error(transparent)]
     Serialize(#[from] SerializeError)
+}
+
+#[derive(Debug, Eq, Error, PartialEq)]
+pub enum EditError {
+    #[error("Entry {0} already exists")]
+    AlreadyExists(String),
+    #[error("Entry {0} not found")]
+    NotFound(String)
 }
 
 #[derive(Debug, Eq, Error, PartialEq)]

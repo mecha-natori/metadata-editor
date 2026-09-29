@@ -1,3 +1,4 @@
+use crate::error::EditError;
 use crate::error::EntryParseError;
 use crate::error::EntrySerializeError;
 use crate::error::ParseError;
@@ -22,6 +23,68 @@ impl Store {
             entries: Default::default(),
             length
         }
+    }
+
+    pub fn get_entries(&self) -> &FxIndexMap<String, Vec<u8>> {
+        &self.entries
+    }
+
+    pub fn get_entry(&self, name: impl AsRef<str>) -> Option<&Vec<u8>> {
+        let name = name.as_ref();
+        self.entries
+            .iter()
+            .find(|&(k, _)| k == name)
+            .map(|(_, v)| v)
+    }
+
+    pub fn get_entry_mut(&mut self, name: impl AsRef<str>) -> Option<&mut Vec<u8>> {
+        let name = name.as_ref();
+        self.entries
+            .iter_mut()
+            .find(|&(k, _)| k == name)
+            .map(|(_, v)| v)
+    }
+
+    pub fn create_entry(
+        &mut self,
+        name: impl Into<String>,
+        data: impl AsRef<[u8]>
+    ) -> Result<(), EditError> {
+        let name = name.into();
+        let data = data.as_ref();
+        require!(
+            self.entries.keys().find(|&k| k == &name).is_none(),
+            EditError::AlreadyExists(name)
+        );
+        let data = data.to_vec();
+        self.entries.insert(name, data);
+        Ok(())
+    }
+
+    pub fn remove_entry(&mut self, name: impl AsRef<str>) -> Result<Vec<u8>, EditError> {
+        let name = name.as_ref();
+        self.entries
+            .swap_remove(name)
+            .ok_or(EditError::NotFound(name.to_string()))
+    }
+
+    pub fn rename_entry(
+        &mut self,
+        old_name: impl Into<String>,
+        new_name: impl Into<String>
+    ) -> Result<(), EditError> {
+        let old_name = old_name.into();
+        let new_name = new_name.into();
+        require!(
+            self.entries.keys().find(|&k| k == &new_name).is_none(),
+            EditError::AlreadyExists(new_name)
+        );
+        let entry = self
+            .entries
+            .swap_remove(&old_name)
+            .ok_or(EditError::NotFound(old_name))?;
+        self.entries.insert(new_name, entry);
+        Ok(())
     }
 
     pub fn read_from_bytes(
