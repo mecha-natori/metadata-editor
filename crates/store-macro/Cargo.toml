@@ -1,0 +1,21 @@
+[dependencies]
+proc-macro-crate = "3"
+proc-macro2 = "1"
+quote = "1"
+
+[dependencies.syn]
+default-features = false
+features = ["parsing", "proc-macro"]
+version = "3"
+
+[lib]
+proc-macro = true
+
+[package]
+edition.workspace = true
+homepage.workspace = true
+license.workspace = true
+name = "store-macro"
+repository.workspace = true
+resolver = "3"
+version = "1.0.0"

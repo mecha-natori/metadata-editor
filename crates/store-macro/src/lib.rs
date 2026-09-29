@@ -1,0 +1,136 @@
+use proc_macro::TokenStream;
+use proc_macro_crate::FoundCrate;
+use proc_macro_crate::crate_name;
+use quote::format_ident;
+use quote::quote;
+use syn::LitInt;
+use syn::Token;
+use syn::parse::Parse;
+use syn::parse::ParseStream;
+use syn::parse_macro_input;
+
+#[proc_macro]
+pub fn create_store_abstraction(input: TokenStream) -> TokenStream {
+    let StoreAbstractionInput {
+        versions
+    } = parse_macro_input!(input as StoreAbstractionInput);
+    let store = store_crate();
+    let enum_variants = versions.iter().map(|ver| {
+        let variant = format_ident!("V{}", ver);
+        let module = format_ident!("v{}", ver);
+        quote! {
+            #variant(#store::#module::Store)
+        }
+    });
+    let read_from_bytes_arms = versions.iter().map(|ver| {
+        let variant = format_ident!("V{}", ver);
+        let module = format_ident!("v{}", ver);
+        quote! {
+            #ver => Ok(
+                Self::#variant(
+                    #store::#module::Store::read_from_bytes(
+                        data,
+                        resv,
+                        length
+                    )?
+                )
+            )
+        }
+    });
+    let to_bytes_arms = versions.iter().map(|ver| {
+        let variant = format_ident!("V{}", ver);
+        quote! {
+            Self::#variant(inner) => inner.to_bytes()
+        }
+    });
+    let from_impls = versions.iter().map(|ver| {
+        let variant = format_ident!("V{}", ver);
+        let module = format_ident!("v{}", ver);
+        quote! {
+            impl From<#store::#module::Store> for Store {
+                fn from(value: #store::#module::Store) -> Self {
+                    Self::#variant(value)
+                }
+            }
+        }
+    });
+    quote! {
+        #[derive(Clone, Debug, Eq, PartialEq)]
+        pub enum Store {
+            #(#enum_variants),*
+        }
+
+        impl Store {
+            pub fn read_from_bytes<T>(
+                data: &mut T,
+                length: u32
+            ) -> Result<Self, #store::error::ParseError>
+            where
+                T: ::std::io::Read
+            {
+                let (version, resv) = {
+                    let b = <T as #store::helper::ReadByte>::read_byte(data)
+                        .map_err(|_|
+                            #store::error::ParseError::ReadFailed("version")
+                        )?;
+                    (b >> 4, b & 0x0f)
+                };
+                match version {
+                    #(#read_from_bytes_arms,)*
+                    _ => Err(
+                        #store::error::ParseError::UnknownVersion(version)
+                    )
+                }
+            }
+
+            pub fn to_bytes(
+                &self
+            ) -> Result<Box<[u8]>, #store::error::SerializeError> {
+                match self {
+                    #(#to_bytes_arms),*
+                }
+            }
+        }
+
+        #(#from_impls)*
+    }
+    .into()
+}
+
+struct StoreAbstractionInput {
+    versions: Vec<u8>
+}
+
+impl Parse for StoreAbstractionInput {
+    fn parse(input: ParseStream) -> syn::Result<Self> {
+        let mut versions = vec![];
+        while !input.is_empty() {
+            let lit = input.parse::<LitInt>()?;
+            let ver = lit.base10_parse::<u8>()?;
+            if 0x0f < ver {
+                return Err(syn::Error::new(
+                    lit.span(),
+                    "store version must be in the range 0..=15"
+                ));
+            }
+            versions.push(ver);
+            if input.is_empty() {
+                break;
+            }
+            input.parse::<Token![,]>()?;
+        }
+        Ok(Self {
+            versions
+        })
+    }
+}
+
+fn store_crate() -> proc_macro2::TokenStream {
+    match crate_name("store").expect("crate 'store' must exist") {
+        FoundCrate::Itself => quote!(crate),
+        FoundCrate::Name(name) => {
+            let ident = format_ident!("{}", name);
+            quote!(::#ident)
+        }
+    }
+}

@@ -1,7 +1,6 @@
 cargo-features = ["profile-rustflags", "trim-paths"]
 
 [build-dependencies.tauri-build]
-features = []
 version = "2"
 
 [dependencies]
@@ -14,6 +13,9 @@ probe-rs = "0.32"
 features = ["derive"]
 version = "1"
 
+[dependencies.store]
+path = "../crates/store"
+
 [dependencies.tauri]
 features = ["config-toml"]
 version = "2"
@@ -23,12 +25,14 @@ crate-type = ["cdylib", "rlib", "staticlib"]
 name = "metadata_editor_lib"
 
 [package]
-authors = ["Sora Tonami <ms0503@outlook.com>"]
 description = "Edit metadata of circuit made by Mechatronics Lab"
-edition = "2024"
+edition.workspace = true
+homepage.workspace = true
+license.workspace = true
 name = "metadata-editor"
+repository.workspace = true
 resolver = "3"
-version = "0.1.0"
+version.workspace = true
 
 [profile.dev]
 incremental = true

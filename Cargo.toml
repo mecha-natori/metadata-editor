@@ -1,3 +1,10 @@
 [workspace]
-members = ["src-tauri"]
+members = ["crates/store", "crates/store-macro", "src-tauri"]
 resolver = "3"
+
+[workspace.package]
+edition = "2024"
+homepage = "https://github.com/mecha-natori/metadata-editor#readme"
+license = "MIT"
+repository = "https://github.com/mecha-natori/metadata-editor"
+version = "0.1.0"

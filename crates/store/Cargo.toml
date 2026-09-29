@@ -1,0 +1,16 @@
+[dependencies]
+indexmap = "2"
+rustc-hash = "2"
+thiserror = "2"
+
+[dependencies.store-macro]
+path = "../store-macro"
+
+[package]
+edition.workspace = true
+homepage.workspace = true
+license.workspace = true
+name = "store"
+repository.workspace = true
+resolver = "3"
+version = "1.0.0"

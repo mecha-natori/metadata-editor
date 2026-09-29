@@ -6,8 +6,6 @@ use serde::Deserialize;
 use serde::Serialize;
 use std::time::Duration;
 
-mod store;
-
 pub fn run() -> anyhow::Result<()> {
     env_logger::init();
     tauri::Builder::default()
