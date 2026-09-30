@@ -6,10 +6,12 @@ use serde::Deserialize;
 use serde::Serialize;
 use std::time::Duration;
 
+mod cmd;
+
 pub fn run() -> anyhow::Result<()> {
     env_logger::init();
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![])
+        .invoke_handler(tauri::generate_handler![cmd::format])
         .run(tauri::generate_context!())?;
     Ok(())
 }
@@ -21,15 +23,13 @@ pub(crate) enum ChipFamily {
     Stm32
 }
 
-pub(crate) fn write<T>(
-    bank_base: u64,
-    bytes: T,
+pub(crate) fn write(
+    bank_base: u32,
+    bytes: impl AsRef<[u8]>,
     chip_family: ChipFamily,
-    chip_name: &str
-) -> Result<(), String>
-where
-    T: AsRef<[u8]>
-{
+    chip_name: impl AsRef<str>
+) -> Result<(), String> {
+    let chip_name = chip_name.as_ref();
     let bytes = bytes.as_ref();
     let protocol = match chip_family {
         ChipFamily::Esp32 => WireProtocol::Jtag,
@@ -57,7 +57,7 @@ where
         return Err("基板の停止に失敗しました。".to_string());
     }
     let mut loader = session.target().flash_loader();
-    if let Ok(_) = loader.add_data(bank_base, bytes)
+    if let Ok(_) = loader.add_data(bank_base.into(), bytes)
         && let Ok(_) = loader.commit(&mut session, download_options)
     {
         // nop
