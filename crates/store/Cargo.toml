@@ -3,6 +3,10 @@ indexmap = "2"
 rustc-hash = "2"
 thiserror = "2"
 
+[dependencies.serde]
+features = ["derive"]
+version = "1"
+
 [dependencies.store-macro]
 path = "../store-macro"
 

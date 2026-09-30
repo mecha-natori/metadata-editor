@@ -3425,6 +3425,7 @@ version = "1.0.0"
 dependencies = [
  "indexmap 2.14.0",
  "rustc-hash",
+ "serde",
  "store-macro",
  "thiserror 2.0.18",
 ]

@@ -14,7 +14,8 @@ pub fn create_store_abstraction(input: TokenStream) -> TokenStream {
     let StoreAbstractionInput {
         versions
     } = parse_macro_input!(input as StoreAbstractionInput);
-    let store = store_crate();
+    let store = get_crate("store");
+    let serde = get_crate("serde");
     let enum_variants = versions.iter().map(|ver| {
         let variant = format_ident!("V{}", ver);
         let module = format_ident!("v{}", ver);
@@ -74,6 +75,8 @@ pub fn create_store_abstraction(input: TokenStream) -> TokenStream {
         }
 
         #[derive(
+            #serde::Deserialize,
+            #serde::Serialize,
             Clone,
             Copy,
             Debug,
@@ -159,8 +162,9 @@ impl Parse for StoreAbstractionInput {
     }
 }
 
-fn store_crate() -> proc_macro2::TokenStream {
-    match crate_name("store").expect("crate 'store' must exist") {
+fn get_crate(name: impl AsRef<str>) -> proc_macro2::TokenStream {
+    let name = name.as_ref();
+    match crate_name(name).unwrap_or_else(|_| panic!("crate '{}' must exist", name)) {
         FoundCrate::Itself => quote!(crate),
         FoundCrate::Name(name) => {
             let ident = format_ident!("{}", name);
