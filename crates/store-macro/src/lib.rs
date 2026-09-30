@@ -22,6 +22,19 @@ pub fn create_store_abstraction(input: TokenStream) -> TokenStream {
             #variant(#store::#module::Store)
         }
     });
+    let version_enum = versions.iter().map(|ver| {
+        let variant = format_ident!("V{}", ver);
+        quote! {
+            #variant = #ver
+        }
+    });
+    let new_arms = versions.iter().map(|ver| {
+        let variant = format_ident!("V{}", ver);
+        let module = format_ident!("v{}", ver);
+        quote! {
+            StoreVersion::#variant => Self::#variant(#store::#module::Store::new(length))
+        }
+    });
     let read_from_bytes_arms = versions.iter().map(|ver| {
         let variant = format_ident!("V{}", ver);
         let module = format_ident!("v{}", ver);
@@ -60,7 +73,28 @@ pub fn create_store_abstraction(input: TokenStream) -> TokenStream {
             #(#enum_variants),*
         }
 
+        #[derive(
+            Clone,
+            Copy,
+            Debug,
+            Eq,
+            Hash,
+            Ord,
+            PartialEq,
+            PartialOrd
+        )]
+        #[repr(u8)]
+        pub enum StoreVersion {
+            #(#version_enum),*
+        }
+
         impl Store {
+            pub fn new(version: StoreVersion, length: u32) -> Self {
+                match version {
+                    #(#new_arms),*
+                }
+            }
+
             pub fn read_from_bytes<T>(
                 data: &mut T,
                 length: u32
