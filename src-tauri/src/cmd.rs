@@ -32,7 +32,7 @@ pub fn load(
     chip_name: &str,
     state: State<'_, Mutex<AppState>>
 ) -> Result<Vec<String>, String> {
-    let store = super::read(bank_base, bank_length, chip_family, chip_name)?;
+    let (store, store_base) = super::read(bank_base, bank_length, chip_family, chip_name)?;
     let store_length = store.len() as u32;
     let mut store = store.as_slice();
     let store = Store::read_from_bytes(&mut store, store_length)
@@ -40,7 +40,10 @@ pub fn load(
     let keys = store.get().get_entries().keys().cloned().collect();
     {
         let mut state = state.lock().unwrap();
+        state.chip_family = Some(chip_family);
+        state.chip_name = Some(chip_name.to_string());
         state.store = Some(store);
+        state.store_base = Some(store_base);
     }
     Ok(keys)
 }

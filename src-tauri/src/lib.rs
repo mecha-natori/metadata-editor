@@ -29,8 +29,11 @@ pub fn run() -> anyhow::Result<()> {
 }
 
 #[derive(Debug, Default, Eq, PartialEq)]
-struct AppState {
-    store: Option<Store>
+pub(crate) struct AppState {
+    pub chip_family: Option<ChipFamily>,
+    pub chip_name: Option<String>,
+    pub store: Option<Store>,
+    pub store_base: Option<u32>
 }
 
 #[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]
@@ -45,7 +48,7 @@ pub(crate) fn read(
     bank_length: u32,
     chip_family: ChipFamily,
     chip_name: impl AsRef<str>
-) -> Result<Vec<u8>, String> {
+) -> Result<(Vec<u8>, u32), String> {
     let chip_name = chip_name.as_ref();
     let protocol = match chip_family {
         ChipFamily::Esp32 => WireProtocol::Jtag,
@@ -75,7 +78,7 @@ pub(crate) fn read(
     let mut buf = vec![0; store_length as usize];
     core.read(store_base.into(), &mut buf)
         .map_err(|_| "フラッシュの読み取りに失敗しました。")?;
-    Ok(buf)
+    Ok((buf, store_base))
 }
 
 pub(crate) fn write(
