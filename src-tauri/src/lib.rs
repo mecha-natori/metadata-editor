@@ -46,23 +46,21 @@ pub(crate) fn write(
         opts.verify = true;
         opts
     };
-    let Ok(mut session) = Session::auto_attach(chip_name, session_config) else {
-        return Err("基板との接続に失敗しました。".to_string());
-    };
-    if let Ok(mut core) = session.core(0)
-        && let Ok(_) = core.halt(Duration::from_millis(200))
+    let mut session = Session::auto_attach(chip_name, session_config)
+        .map_err(|_| "基板との接続に失敗しました。")?;
     {
-        // nop
-    } else {
-        return Err("基板の停止に失敗しました。".to_string());
+        let mut core = session
+            .core(0)
+            .map_err(|_| "MCUへのアクセスに失敗しました。")?;
+        if core.halt(Duration::from_millis(200)).is_err() {
+            return Err("基板の停止に失敗しました。".into());
+        }
     }
     let mut loader = session.target().flash_loader();
-    if let Ok(_) = loader.add_data(bank_base.into(), bytes)
-        && let Ok(_) = loader.commit(&mut session, download_options)
+    if loader.add_data(bank_base.into(), bytes).is_err()
+        || loader.commit(&mut session, download_options).is_err()
     {
-        // nop
-    } else {
-        return Err("基板への書き込みに失敗しました".to_string());
+        return Err("基板への書き込みに失敗しました".into());
     }
     Ok(())
 }
