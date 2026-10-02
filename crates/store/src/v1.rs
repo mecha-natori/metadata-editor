@@ -1,3 +1,4 @@
+use crate::StoreApi;
 use crate::error::EditError;
 use crate::error::EntryParseError;
 use crate::error::EntrySerializeError;
@@ -18,19 +19,19 @@ pub struct Store {
     length: u32
 }
 
-impl Store {
-    pub fn new(length: u32) -> Self {
+impl StoreApi for Store {
+    fn new(length: u32) -> Self {
         Self {
             entries: Default::default(),
             length
         }
     }
 
-    pub fn get_entries(&self) -> &FxIndexMap<String, Vec<u8>> {
+    fn get_entries(&self) -> &FxIndexMap<String, Vec<u8>> {
         &self.entries
     }
 
-    pub fn get_entry(&self, name: impl AsRef<str>) -> Option<&Vec<u8>> {
+    fn get_entry(&self, name: impl AsRef<str>) -> Option<&Vec<u8>> {
         let name = name.as_ref();
         self.entries
             .iter()
@@ -38,7 +39,7 @@ impl Store {
             .map(|(_, v)| v)
     }
 
-    pub fn get_entry_mut(&mut self, name: impl AsRef<str>) -> Option<&mut Vec<u8>> {
+    fn get_entry_mut(&mut self, name: impl AsRef<str>) -> Option<&mut Vec<u8>> {
         let name = name.as_ref();
         self.entries
             .iter_mut()
@@ -46,7 +47,7 @@ impl Store {
             .map(|(_, v)| v)
     }
 
-    pub fn create_entry(
+    fn create_entry(
         &mut self,
         name: impl Into<String>,
         data: impl AsRef<[u8]>
@@ -62,14 +63,14 @@ impl Store {
         Ok(())
     }
 
-    pub fn remove_entry(&mut self, name: impl AsRef<str>) -> Result<Vec<u8>, StoreError> {
+    fn remove_entry(&mut self, name: impl AsRef<str>) -> Result<Vec<u8>, StoreError> {
         let name = name.as_ref();
         self.entries
             .swap_remove(name)
             .ok_or(EditError::NotFound(name.to_string()).into())
     }
 
-    pub fn rename_entry(
+    fn rename_entry(
         &mut self,
         old_name: impl Into<String>,
         new_name: impl Into<String>
@@ -88,11 +89,7 @@ impl Store {
         Ok(())
     }
 
-    pub fn read_from_bytes(
-        data: &mut impl Read,
-        resv: u8,
-        length: u32
-    ) -> Result<Self, StoreError> {
+    fn read_from_bytes(data: &mut impl Read, resv: u8, length: u32) -> Result<Self, StoreError> {
         require!(resv == 0, ParseError::InvalidReservedArea.into());
         let num_entries = data
             .read_byte()
@@ -159,7 +156,7 @@ impl Store {
         })
     }
 
-    pub fn to_bytes(&self) -> Result<Box<[u8]>, StoreError> {
+    fn to_bytes(&self) -> Result<Box<[u8]>, StoreError> {
         let num_entries = self
             .entries
             .len()

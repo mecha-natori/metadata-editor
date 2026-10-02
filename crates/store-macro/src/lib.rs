@@ -36,6 +36,13 @@ pub fn create_store_abstraction(input: TokenStream) -> TokenStream {
             StoreVersion::#variant => Self::#variant(#store::#module::Store::new(length))
         }
     });
+    let get_arms = versions.iter().map(|ver| {
+        let variant = format_ident!("V{}", ver);
+        quote! {
+            Self::#variant(inner) => inner
+        }
+    });
+    let get_mut_arms = get_arms.clone();
     let read_from_bytes_arms = versions.iter().map(|ver| {
         let variant = format_ident!("V{}", ver);
         let module = format_ident!("v{}", ver);
@@ -95,6 +102,18 @@ pub fn create_store_abstraction(input: TokenStream) -> TokenStream {
             pub fn new(version: StoreVersion, length: u32) -> Self {
                 match version {
                     #(#new_arms),*
+                }
+            }
+
+            pub fn get(&self) -> &impl #store::StoreApi {
+                match self {
+                    #(#get_arms),*
+                }
+            }
+
+            pub fn get_mut(&mut self) -> &mut impl #store::StoreApi {
+                match self {
+                    #(#get_mut_arms),*
                 }
             }
 
