@@ -18,7 +18,8 @@ pub fn run() -> anyhow::Result<()> {
         .invoke_handler(tauri::generate_handler![
             cmd::format,
             cmd::get_data,
-            cmd::load
+            cmd::load,
+            cmd::save
         ])
         .setup(|app| {
             app.manage(Mutex::new(AppState::default()));

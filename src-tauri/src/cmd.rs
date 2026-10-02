@@ -58,3 +58,20 @@ pub fn get_data(name: &str, state: State<'_, Mutex<AppState>>) -> Result<Respons
     let data = store.get_entry(name).ok_or("エントリが存在しません。")?;
     Ok(Response::new(data.clone()))
 }
+
+#[tauri::command]
+pub fn save(state: State<'_, Mutex<AppState>>) -> Result<(), String> {
+    let mut state = state.lock().unwrap();
+    let store = state.store.as_mut();
+    let bytes = store
+        .ok_or("ストアがロードされていません。")?
+        .to_bytes()
+        .map_err(|err| format!("ストアのシリアライズに失敗しました: {}", err))?;
+    super::write(
+        state.store_base.unwrap(),
+        bytes,
+        state.chip_family.unwrap(),
+        state.chip_name.clone().unwrap()
+    )?;
+    Ok(())
+}
