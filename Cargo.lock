@@ -3426,6 +3426,7 @@ dependencies = [
  "indexmap 2.14.0",
  "rustc-hash",
  "serde",
+ "serde_repr",
  "store-macro",
  "thiserror 2.0.18",
 ]

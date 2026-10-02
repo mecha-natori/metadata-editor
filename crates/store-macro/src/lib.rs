@@ -15,7 +15,7 @@ pub fn create_store_abstraction(input: TokenStream) -> TokenStream {
         versions
     } = parse_macro_input!(input as StoreAbstractionInput);
     let store = get_crate("store");
-    let serde = get_crate("serde");
+    let serde_repr = get_crate("serde_repr");
     let enum_variants = versions.iter().map(|ver| {
         let variant = format_ident!("V{}", ver);
         let module = format_ident!("v{}", ver);
@@ -75,8 +75,8 @@ pub fn create_store_abstraction(input: TokenStream) -> TokenStream {
         }
 
         #[derive(
-            #serde::Deserialize,
-            #serde::Serialize,
+            #serde_repr::Deserialize_repr,
+            #serde_repr::Serialize_repr,
             Clone,
             Copy,
             Debug,
@@ -101,7 +101,7 @@ pub fn create_store_abstraction(input: TokenStream) -> TokenStream {
             pub fn read_from_bytes<T>(
                 data: &mut T,
                 length: u32
-            ) -> Result<Self, #store::error::ParseError>
+            ) -> Result<Self, #store::error::StoreError>
             where
                 T: ::std::io::Read
             {
@@ -115,14 +115,14 @@ pub fn create_store_abstraction(input: TokenStream) -> TokenStream {
                 match version {
                     #(#read_from_bytes_arms,)*
                     _ => Err(
-                        #store::error::ParseError::UnknownVersion(version)
+                        #store::error::ParseError::UnknownVersion(version).into()
                     )
                 }
             }
 
             pub fn to_bytes(
                 &self
-            ) -> Result<Box<[u8]>, #store::error::SerializeError> {
+            ) -> Result<Box<[u8]>, #store::error::StoreError> {
                 match self {
                     #(#to_bytes_arms),*
                 }
