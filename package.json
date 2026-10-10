@@ -3,6 +3,7 @@
         "@tauri-apps/api": "^2.11.1",
         "react": "^19.2.8",
         "react-dom": "^19.2.8",
+        "react-router": "^8.4.0",
         "zod": "jsr:@zod/zod@^4.5.4"
     },
     "devDependencies": {

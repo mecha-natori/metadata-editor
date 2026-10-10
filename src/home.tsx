@@ -4,6 +4,7 @@ import { useSwitchState } from './hooks/switch-state';
 import { getAllBoardNames, getBoard } from '@/lib/boards';
 import { invoke } from '@tauri-apps/api/core';
 import { useCallback, useState } from 'react';
+import { Link } from 'react-router';
 import { z } from 'zod';
 import type { ChangeEvent, JSX, SubmitEvent } from 'react';
 
@@ -20,7 +21,7 @@ const formatFormSchema = z.object({
     version: z.enum(['1'])
 });
 
-export function App(): JSX.Element {
+export function Home(): JSX.Element {
     const { ShowResult, result, setError, setOk } = useResult();
     const boards = getAllBoardNames();
     const versions = Object.values(formatFormSchema.shape.version.enum);
@@ -93,33 +94,47 @@ export function App(): JSX.Element {
     );
     return (
         <>
-            <div className="flex min-h-screen w-screen flex-col items-center justify-center px-8 py-16">
-                <h1>メタデータエディタ</h1>
-                <p>メカトロ製基板のメタデータストアを操作します。</p>
-                <label htmlFor="board">基板:</label>
-                <select
-                    className="rounded-lg border px-2 py-1"
-                    id="board"
-                    name="board"
-                    onChange={handleBoardChange}
-                    value={board}
-                >
-                    {boards.map(board => (
-                        <option
-                            key={board}
-                            value={board}
+            <div className="flex min-h-screen w-screen flex-col items-center justify-center gap-8 px-8 py-16">
+                <div className="flex flex-col items-center justify-center gap-2">
+                    <h1>メタデータエディタ</h1>
+                    <p>メカトロ製基板のメタデータストアを操作します。</p>
+                </div>
+                <div className="flex flex-col items-center justify-center gap-2">
+                    <label htmlFor="board">基板:</label>
+                    <select
+                        className="rounded-lg border px-2 py-1"
+                        id="board"
+                        name="board"
+                        onChange={handleBoardChange}
+                        value={board}
+                    >
+                        {boards.map(board => (
+                            <option
+                                key={board}
+                                value={board}
+                            >
+                                {board}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                <div className="flex flex-col items-center justify-center gap-4">
+                    <button
+                        className="cursor-pointer rounded-4xl border bg-(--foreground) px-8 py-3 text-lg text-(--background) transition-colors duration-200 hover:bg-(--hover-background) hover:text-(--hover-foreground)"
+                        onClick={handleFormatModalOpen}
+                        type="button"
+                    >
+                        フォーマット
+                    </button>
+                    <Link to={`/edit/${board}`}>
+                        <button
+                            className="cursor-pointer rounded-4xl border bg-(--foreground) px-8 py-3 text-lg text-(--background) transition-colors duration-200 hover:bg-(--hover-background) hover:text-(--hover-foreground)"
+                            type="button"
                         >
-                            {board}
-                        </option>
-                    ))}
-                </select>
-                <button
-                    className="m-4 cursor-pointer rounded-4xl border bg-(--foreground) px-8 py-3 text-lg text-(--background) transition-colors duration-200 hover:bg-(--hover-background) hover:text-(--hover-foreground)"
-                    onClick={handleFormatModalOpen}
-                    type="button"
-                >
-                    フォーマット
-                </button>
+                            読み込む
+                        </button>
+                    </Link>
+                </div>
             </div>
             <Modal
                 onClose={handleFormatModalClose}
