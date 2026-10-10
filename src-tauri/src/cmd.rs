@@ -5,6 +5,8 @@ use store::Store;
 use store::StoreApi;
 use store::StoreVersion;
 use tauri::State;
+use tauri::ipc::InvokeBody;
+use tauri::ipc::Request;
 use tauri::ipc::Response;
 
 #[tauri::command]
@@ -57,6 +59,28 @@ pub fn get_data(name: &str, state: State<'_, Mutex<AppState>>) -> Result<Respons
         .get();
     let data = store.get_entry(name).ok_or("エントリが存在しません。")?;
     Ok(Response::new(data.clone()))
+}
+
+#[tauri::command]
+pub fn set_data(
+    name: &str,
+    state: State<'_, Mutex<AppState>>,
+    value: Request
+) -> Result<(), String> {
+    let InvokeBody::Raw(bytes) = value.body() else {
+        return Err("データの設定に失敗しました。".into());
+    };
+    let mut state = state.lock().unwrap();
+    let store = state
+        .store
+        .as_mut()
+        .ok_or("ストアがロードされていません。")?
+        .get_mut();
+    let entry = store
+        .get_entry_mut(name)
+        .ok_or("エントリが存在しません。")?;
+    entry.clone_from(bytes);
+    Ok(())
 }
 
 #[tauri::command]

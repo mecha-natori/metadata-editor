@@ -19,7 +19,8 @@ pub fn run() -> anyhow::Result<()> {
             cmd::format,
             cmd::get_data,
             cmd::load,
-            cmd::save
+            cmd::save,
+            cmd::set_data
         ])
         .setup(|app| {
             app.manage(Mutex::new(AppState::default()));
