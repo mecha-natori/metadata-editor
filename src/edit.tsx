@@ -1,3 +1,5 @@
+import { useModal } from './hooks/modal';
+import { useSwitchState } from './hooks/switch-state';
 import { getBoard, testBoard } from './lib/boards';
 import { idFunc } from './lib/helper';
 import { invoke } from '@tauri-apps/api/core';
@@ -13,6 +15,12 @@ export function Edit(): JSX.Element {
             : getBoard(params.board!)!;
     const navigate = useNavigate();
     const [entryNames, setEntryNames] = useState<Array<string>>([]);
+    const [
+        noSaveWarnModalOpen,
+        handleNoSaveWarnModalClose,
+        handleNoSaveWarnModalOpen
+    ] = useSwitchState(false);
+    const { Modal: NoSaveWarnModal, ref: noSaveWarnModalRef } = useModal();
     const getEntryData = useCallback(async (name: string): Promise<string> => {
         try {
             return invoke('get_data', { name }).then(data =>
@@ -39,7 +47,20 @@ export function Edit(): JSX.Element {
     const handleNoSaveClose = useCallback(
         (e: MouseEvent<HTMLButtonElement>) => {
             e.preventDefault();
-            alert('TODO: 警告モーダル');
+            handleNoSaveWarnModalOpen();
+        },
+        []
+    );
+    const handleNoSaveCancel = useCallback(
+        (e: MouseEvent<HTMLButtonElement>) => {
+            e.preventDefault();
+            noSaveWarnModalRef.current?.close();
+        },
+        []
+    );
+    const handleNoSaveConfirm = useCallback(
+        (e: MouseEvent<HTMLButtonElement>) => {
+            e.preventDefault();
             navigate('/');
         },
         []
@@ -57,86 +78,114 @@ export function Edit(): JSX.Element {
             });
     }, []);
     return (
-        <div className="flex min-h-screen w-screen flex-col items-center justify-center gap-8 px-8 pt-8 pb-16">
-            <div className="flex w-full flex-row items-center justify-between">
-                <div className="flex flex-row items-center gap-2">
+        <>
+            <div className="flex min-h-screen w-screen flex-col items-center justify-center gap-8 px-8 pt-8 pb-16">
+                <div className="flex w-full flex-row items-center justify-between">
+                    <div className="flex flex-row items-center gap-2">
+                        <button
+                            className="w-max cursor-pointer rounded-4xl border bg-(--foreground) px-8 py-3 text-lg text-(--background) transition-colors duration-200 hover:bg-(--hover-background) hover:text-(--foreground)"
+                            onClick={handleSaveClose}
+                            type="button"
+                        >
+                            保存して終了
+                        </button>
+                        <button
+                            className="w-max cursor-pointer rounded-4xl border bg-(--foreground) px-8 py-3 text-lg text-(--background) transition-colors duration-200 hover:bg-(--hover-background) hover:text-(--foreground)"
+                            onClick={handleSave}
+                            type="button"
+                        >
+                            保存
+                        </button>
+                    </div>
                     <button
-                        className="w-max cursor-pointer rounded-4xl border bg-(--foreground) px-8 py-3 text-lg text-(--background) transition-colors duration-200 hover:bg-(--hover-background) hover:text-(--foreground)"
-                        onClick={handleSaveClose}
+                        className="w-max cursor-pointer rounded-4xl border border-(--border-button-delete) bg-(--button-delete) px-8 py-3 text-lg transition-colors duration-200 hover:bg-(--hover-button-delete) hover:text-(--foreground)"
+                        onClick={handleNoSaveClose}
                         type="button"
                     >
-                        保存して終了
-                    </button>
-                    <button
-                        className="w-max cursor-pointer rounded-4xl border bg-(--foreground) px-8 py-3 text-lg text-(--background) transition-colors duration-200 hover:bg-(--hover-background) hover:text-(--foreground)"
-                        onClick={handleSave}
-                        type="button"
-                    >
-                        保存
+                        保存せずに終了
                     </button>
                 </div>
-                <button
-                    className="w-max cursor-pointer rounded-4xl border border-(--border-button-delete) bg-(--button-delete) px-8 py-3 text-lg transition-colors duration-200 hover:bg-(--hover-button-delete) hover:text-(--foreground)"
-                    onClick={handleNoSaveClose}
-                    type="button"
-                >
-                    保存せずに終了
-                </button>
-            </div>
-            <table className="grid w-full grid-cols-[1fr_1fr_minmax(8rem,_0.4fr)] rounded-md border">
-                <thead className="contents">
-                    <tr className="col-span-full grid grid-cols-subgrid border-b">
-                        <th className="grid place-items-center border-r p-2 text-lg">
-                            エントリ名
-                        </th>
-                        <th className="grid place-items-center border-r p-2 text-lg">
-                            データ(バイト列・16進数)
-                        </th>
-                        <th className="p-2 font-normal">
-                            <button
-                                className="hover:text(--foreground) cursor-pointer rounded-xl border border-(--border-button-add) bg-(--button-add) px-4 py-2 transition-colors duration-200 hover:bg-(--hover-button-add) dark:text-(--background) dark:hover:text-(--foreground)"
-                                type="button"
-                            >
-                                追加
-                            </button>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody className="contents">
-                    {entryNames.map(name => (
-                        <tr
-                            className="col-span-full grid grid-cols-subgrid border-t border-(--border-table)"
-                            key={name}
-                        >
-                            <td className="grid items-center border-r p-2">
-                                {name}
-                            </td>
-                            <td className="grid items-center border-r p-2">
-                                <Suspense fallback="(読み込み中...)">
-                                    <Await
-                                        children={idFunc}
-                                        resolve={getEntryData(name)}
-                                    />
-                                </Suspense>
-                            </td>
-                            <td className="flex flex-row items-center justify-center p-2">
+                <table className="grid w-full grid-cols-[1fr_1fr_minmax(8rem,_0.4fr)] rounded-md border">
+                    <thead className="contents">
+                        <tr className="col-span-full grid grid-cols-subgrid border-b">
+                            <th className="grid place-items-center border-r p-2 text-lg">
+                                エントリ名
+                            </th>
+                            <th className="grid place-items-center border-r p-2 text-lg">
+                                データ(バイト列・16進数)
+                            </th>
+                            <th className="p-2 font-normal">
                                 <button
-                                    className="cursor-pointer rounded-xl border bg-(--foreground) px-4 py-2 text-(--background) transition-colors duration-200 hover:bg-(--hover-background) hover:text-(--foreground)"
+                                    className="hover:text(--foreground) cursor-pointer rounded-xl border border-(--border-button-add) bg-(--button-add) px-4 py-2 transition-colors duration-200 hover:bg-(--hover-button-add) dark:text-(--background) dark:hover:text-(--foreground)"
                                     type="button"
                                 >
-                                    編集
+                                    追加
                                 </button>
-                                <button
-                                    className="cursor-pointer rounded-xl border border-(--border-button-delete) bg-(--button-delete) px-4 py-2 transition-colors duration-200 hover:bg-(--hover-button-delete) hover:text-(--foreground)"
-                                    type="button"
-                                >
-                                    削除
-                                </button>
-                            </td>
+                            </th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
+                    </thead>
+                    <tbody className="contents">
+                        {entryNames.map(name => (
+                            <tr
+                                className="col-span-full grid grid-cols-subgrid border-t border-(--border-table)"
+                                key={name}
+                            >
+                                <td className="grid items-center border-r p-2">
+                                    {name}
+                                </td>
+                                <td className="grid items-center border-r p-2">
+                                    <Suspense fallback="(読み込み中...)">
+                                        <Await
+                                            children={idFunc}
+                                            resolve={getEntryData(name)}
+                                        />
+                                    </Suspense>
+                                </td>
+                                <td className="flex flex-row items-center justify-center p-2">
+                                    <button
+                                        className="cursor-pointer rounded-xl border bg-(--foreground) px-4 py-2 text-(--background) transition-colors duration-200 hover:bg-(--hover-background) hover:text-(--foreground)"
+                                        type="button"
+                                    >
+                                        編集
+                                    </button>
+                                    <button
+                                        className="cursor-pointer rounded-xl border border-(--border-button-delete) bg-(--button-delete) px-4 py-2 transition-colors duration-200 hover:bg-(--hover-button-delete) hover:text-(--foreground)"
+                                        type="button"
+                                    >
+                                        削除
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+            <NoSaveWarnModal
+                className="flex flex-col gap-8"
+                onClose={handleNoSaveWarnModalClose}
+                open={noSaveWarnModalOpen}
+                ref={noSaveWarnModalRef}
+            >
+                <p className="text-lg font-bold">
+                    変更した内容は失われます。本当に良いですか？
+                </p>
+                <div className="flex flex-col justify-between gap-4 md:flex-row md:gap-0">
+                    <button
+                        className="cursor-pointer rounded-4xl border bg-(--foreground) px-8 py-3 text-lg text-(--background) transition-colors duration-200 hover:bg-(--hover-background) hover:text-(--foreground) md:w-max"
+                        onClick={handleNoSaveCancel}
+                        type="button"
+                    >
+                        編集に戻る
+                    </button>
+                    <button
+                        className="cursor-pointer rounded-4xl border border-(--border-button-delete) bg-(--button-delete) px-8 py-3 text-lg transition-colors duration-200 hover:bg-(--hover-button-delete) hover:text-(--foreground) md:w-max"
+                        onClick={handleNoSaveConfirm}
+                        type="button"
+                    >
+                        保存せずに終了
+                    </button>
+                </div>
+            </NoSaveWarnModal>
+        </>
     );
 }
