@@ -17,23 +17,35 @@
         --background-backdrop: oklch(0% 0 0deg / 0.5);
         --background-error: oklch(95% 0.03 25deg);
         --background-success: oklch(95% 0.035 145deg);
+        --border-button-add: oklch(52% 0.16 145deg);
+        --border-button-delete: oklch(46% 0.18 25deg);
         --border-error: oklch(58% 0.17 25deg);
         --border-modal: oklch(70% 0 0deg);
         --border-success: oklch(58% 0.14 145deg);
+        --border-table: oklch(70% 0 0deg);
+        --button-add: oklch(75% 0.16 145deg);
+        --button-delete: oklch(60% 0.2 25deg);
         --foreground: oklch(5% 0 0deg);
         --hover-background: oklch(70% 0 0deg);
-        --hover-foreground: oklch(5% 0 0deg);
+        --hover-button-add: oklch(80% 0.16 145deg);
+        --hover-button-delete: oklch(63% 0.2 25deg);
 
         @media (prefers-color-scheme: dark) {
             --background: oklch(25% 0 0deg);
             --background-error: oklch(28% 0.055 25deg);
             --background-success: oklch(28% 0.055 145deg);
+            --border-button-add: oklch(84% 0.13 145deg);
+            --border-button-delete: oklch(72% 0.16 25deg);
             --border-error: oklch(72% 0.16 25deg);
             --border-modal: oklch(60% 0 0deg);
             --border-success: oklch(72% 0.14 145deg);
+            --border-table: oklch(60% 0 0deg);
+            --button-add: oklch(68% 0.16 145deg);
+            --button-delete: oklch(43% 0.17 25deg);
             --foreground: oklch(95% 0 0deg);
             --hover-background: oklch(60% 0 0deg);
-            --hover-foreground: oklch(95% 0 0deg);
+            --hover-button-add: oklch(50% 0.12 145deg);
+            --hover-button-delete: oklch(40% 0.13 25deg);
 
             color-scheme: dark;
         }

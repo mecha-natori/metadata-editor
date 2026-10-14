@@ -120,7 +120,7 @@ export function Home(): JSX.Element {
                 </div>
                 <div className="flex flex-col items-center justify-center gap-4">
                     <button
-                        className="cursor-pointer rounded-4xl border bg-(--foreground) px-8 py-3 text-lg text-(--background) transition-colors duration-200 hover:bg-(--hover-background) hover:text-(--hover-foreground)"
+                        className="cursor-pointer rounded-4xl border bg-(--foreground) px-8 py-3 text-lg text-(--background) transition-colors duration-200 hover:bg-(--hover-background) hover:text-(--foreground)"
                         onClick={handleFormatModalOpen}
                         type="button"
                     >
@@ -128,7 +128,7 @@ export function Home(): JSX.Element {
                     </button>
                     <Link to={`/edit/${board}`}>
                         <button
-                            className="cursor-pointer rounded-4xl border bg-(--foreground) px-8 py-3 text-lg text-(--background) transition-colors duration-200 hover:bg-(--hover-background) hover:text-(--hover-foreground)"
+                            className="cursor-pointer rounded-4xl border bg-(--foreground) px-8 py-3 text-lg text-(--background) transition-colors duration-200 hover:bg-(--hover-background) hover:text-(--foreground)"
                             type="button"
                         >
                             読み込む
