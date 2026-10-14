@@ -1,5 +1,7 @@
 use crate::AppState;
 use crate::ChipFamily;
+use std::io::Cursor;
+use std::io::Read;
 use std::sync::Mutex;
 use store::Store;
 use store::StoreApi;
@@ -33,6 +35,36 @@ pub fn load(
     chip_name: &str,
     state: State<'_, Mutex<AppState>>
 ) -> Result<Vec<String>, String> {
+    if chip_family == ChipFamily::Test {
+        let mut store = Store::new(StoreVersion::V1, u32::MAX);
+        store
+            .get_mut()
+            .create_entry("test1", vec![
+                0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef,
+            ])
+            .unwrap();
+        store
+            .get_mut()
+            .create_entry("TEST2", vec![
+                0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef,
+            ])
+            .unwrap();
+        store
+            .get_mut()
+            .create_entry("テスト3", vec![
+                0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef,
+            ])
+            .unwrap();
+        let keys = store.get().get_entries().keys().cloned().collect();
+        {
+            let mut state = state.lock().unwrap();
+            state.chip_family = Some(chip_family);
+            state.chip_name = Some(chip_name.to_string());
+            state.store = Some(store);
+            state.store_base = Some(0);
+        }
+        return Ok(keys);
+    }
     let (store, store_base) = super::read(bank_base, bank_length, chip_family, chip_name)?;
     let store_length = store.len() as u32;
     let mut store = store.as_slice();
@@ -76,17 +108,18 @@ pub fn set_data(
         .as_mut()
         .ok_or("ストアがロードされていません。")?
         .get_mut();
-    let entry = store
-        .get_entry_mut(name)
-        .ok_or("エントリが存在しません。")?;
+    let entry = store.get_entry_mut(name).ok_or("エントリが存在しません")?;
     entry.clone_from(bytes);
     Ok(())
 }
 
 #[tauri::command]
 pub fn save(state: State<'_, Mutex<AppState>>) -> Result<(), String> {
-    let mut state = state.lock().unwrap();
-    let store = state.store.as_mut();
+    let state = state.lock().unwrap();
+    if state.chip_family == Some(ChipFamily::Test) {
+        return Ok(());
+    }
+    let store = state.store.as_ref();
     let bytes = store
         .ok_or("ストアがロードされていません。")?
         .to_bytes()

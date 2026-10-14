@@ -42,7 +42,8 @@ pub(crate) struct AppState {
 #[serde(rename_all = "lowercase")]
 pub(crate) enum ChipFamily {
     Esp32,
-    Stm32
+    Stm32,
+    Test
 }
 
 pub(crate) fn read(
@@ -54,7 +55,8 @@ pub(crate) fn read(
     let chip_name = chip_name.as_ref();
     let protocol = match chip_family {
         ChipFamily::Esp32 => WireProtocol::Jtag,
-        ChipFamily::Stm32 => WireProtocol::Swd
+        ChipFamily::Stm32 => WireProtocol::Swd,
+        ChipFamily::Test => unreachable!()
     };
     let session_config = SessionConfig {
         protocol: Some(protocol),
@@ -93,7 +95,8 @@ pub(crate) fn write(
     let bytes = bytes.as_ref();
     let protocol = match chip_family {
         ChipFamily::Esp32 => WireProtocol::Jtag,
-        ChipFamily::Stm32 => WireProtocol::Swd
+        ChipFamily::Stm32 => WireProtocol::Swd,
+        ChipFamily::Test => unreachable!()
     };
     let session_config = SessionConfig {
         protocol: Some(protocol),
