@@ -3,8 +3,19 @@ import type {
     DetailedHTMLProps,
     DialogHTMLAttributes,
     JSX,
-    PropsWithChildren
+    PropsWithChildren,
+    RefObject
 } from 'react';
+
+export interface UseModalResult {
+    Modal: (props: ModalProps) => JSX.Element;
+    ref: ModalProps['ref'];
+}
+
+export function useModal(): UseModalResult {
+    const ref = useRef<HTMLDialogElement>(null);
+    return { Modal, ref };
+}
 
 export interface ModalProps extends PropsWithChildren<
     Omit<
@@ -17,15 +28,16 @@ export interface ModalProps extends PropsWithChildren<
 > {
     onClose: () => void;
     open: boolean;
+    ref: RefObject<HTMLDialogElement | null>;
 }
 
-export function Modal({
+function Modal({
     children,
     className,
     open,
+    ref,
     ...props
 }: ModalProps): JSX.Element {
-    const ref = useRef<HTMLDialogElement>(null);
     const handleClose = useCallback(() => {
         ref.current?.close();
     }, []);

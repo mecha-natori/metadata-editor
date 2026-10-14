@@ -1,4 +1,4 @@
-import { Modal } from './components/modal';
+import { useModal } from './hooks/modal';
 import { useResult } from './hooks/result';
 import { useSwitchState } from './hooks/switch-state';
 import { getAllBoardNames, getBoard } from '@/lib/boards';
@@ -29,6 +29,7 @@ export function Home(): JSX.Element {
     const [length, setLength] = useState(8);
     const [formatModalOpen, handleFormatModalClose, handleFormatModalOpen] =
         useSwitchState(false);
+    const { Modal: FormatModal, ref: formatModalRef } = useModal();
     const handleBoardChange = useCallback(
         (e: ChangeEvent<HTMLSelectElement, HTMLSelectElement>) => {
             setBoard(e.currentTarget.value);
@@ -136,9 +137,10 @@ export function Home(): JSX.Element {
                     </Link>
                 </div>
             </div>
-            <Modal
+            <FormatModal
                 onClose={handleFormatModalClose}
                 open={formatModalOpen}
+                ref={formatModalRef}
             >
                 <ShowResult result={result} />
                 <form
@@ -197,7 +199,7 @@ export function Home(): JSX.Element {
                         フォーマット実行
                     </button>
                 </form>
-            </Modal>
+            </FormatModal>
         </>
     );
 }
