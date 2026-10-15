@@ -94,13 +94,20 @@ pub fn get_data(name: &str, state: State<'_, Mutex<AppState>>) -> Result<Respons
 }
 
 #[tauri::command]
-pub fn set_data(
-    name: &str,
-    state: State<'_, Mutex<AppState>>,
-    value: Request
-) -> Result<(), String> {
-    let InvokeBody::Raw(bytes) = value.body() else {
+pub fn set_data(req: Request, state: State<'_, Mutex<AppState>>) -> Result<(), String> {
+    let InvokeBody::Raw(bytes) = req.body() else {
         return Err("データの設定に失敗しました。".into());
+    };
+    let (name, bytes) = {
+        let mut reader = Cursor::new(bytes);
+        let mut buf = [0; 1];
+        reader.read_exact(&mut buf).map_err(|_| "")?;
+        let name_len = buf[0];
+        let mut buf = vec![0; name_len.into()];
+        reader.read_exact(&mut buf).map_err(|_| "")?;
+        let name = String::from_utf8(buf).map_err(|_| "")?;
+        let bytes = &bytes[reader.position() as usize..];
+        (name, bytes)
     };
     let mut state = state.lock().unwrap();
     let store = state
@@ -109,7 +116,7 @@ pub fn set_data(
         .ok_or("ストアがロードされていません。")?
         .get_mut();
     let entry = store.get_entry_mut(name).ok_or("エントリが存在しません")?;
-    entry.clone_from(bytes);
+    entry.clone_from_slice(bytes);
     Ok(())
 }
 
