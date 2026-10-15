@@ -142,6 +142,16 @@ export function Home(): JSX.Element {
                             読み込む
                         </button>
                     </Link>
+                    {import.meta.env.DEV && (
+                        <Link to="/edit/test">
+                            <button
+                                className="cursor-pointer rounded-4xl border bg-(--foreground) px-8 py-3 text-lg text-(--background) transition-colors duration-200 hover:bg-(--hover-background) hover:text-(--foreground)"
+                                type="button"
+                            >
+                                [デバッグ用] ダミーを読み込む
+                            </button>
+                        </Link>
+                    )}
                 </div>
             </div>
             <FormatModal
