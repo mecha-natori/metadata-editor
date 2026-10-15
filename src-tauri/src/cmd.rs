@@ -131,7 +131,8 @@ pub fn set_data(req: Request, state: State<'_, Mutex<AppState>>) -> Result<(), S
             }
         }
     };
-    entry.clone_from_slice(bytes);
+    entry.clear();
+    entry.extend_from_slice(bytes);
     Ok(())
 }
 
