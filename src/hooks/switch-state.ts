@@ -2,9 +2,7 @@ import { useCallback, useState } from 'react';
 
 export type UseSwitchStateResult = [boolean, () => void, () => void];
 
-export function useSwitchState(
-    initialState: boolean = false
-): UseSwitchStateResult {
+export function useSwitchState(initialState = false): UseSwitchStateResult {
     const [state, setState] = useState(initialState);
     const setOff = useCallback(() => {
         setState(false);
