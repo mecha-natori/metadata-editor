@@ -55,10 +55,12 @@ export function Edit(): JSX.Element {
     const getEntryData = useCallback(async (name: string): Promise<string> => {
         try {
             return invoke('get_data', { name }).then(data =>
+                // oxlint-disable-next-line typescript/consistent-type-assertions typescript/no-unsafe-type-assertion
                 new Uint8Array(data as ArrayBuffer).toHex()
             );
         } catch (err) {
-            return `(取得失敗: ${err})`;
+            // oxlint-disable-next-line typescript/consistent-type-assertions typescript/no-unsafe-type-assertion
+            return `(取得失敗: ${err as string})`;
         }
     }, []);
     const handleSave = useCallback((e: MouseEvent) => {
@@ -69,85 +71,117 @@ export function Edit(): JSX.Element {
             })
             .catch(alert);
     }, []);
-    const handleSaveClose = useCallback((e: MouseEvent) => {
-        handleSave(e);
-        navigate('/');
-    }, []);
-    const handleNoSaveClose = useCallback((e: MouseEvent) => {
-        e.preventDefault();
-        handleNoSaveWarnModalOpen();
-    }, []);
-    const handleNoSaveCancel = useCallback((e: MouseEvent) => {
-        e.preventDefault();
-        noSaveWarnModalRef.current?.close();
-    }, []);
-    const handleNoSaveConfirm = useCallback((e: MouseEvent) => {
-        e.preventDefault();
-        navigate('/');
-    }, []);
+    const handleSaveClose = useCallback(
+        (e: MouseEvent) => {
+            handleSave(e);
+            // oxlint-disable-next-line typescript/no-floating-promises
+            navigate('/');
+        },
+        [handleSave, navigate]
+    );
+    const handleNoSaveClose = useCallback(
+        (e: MouseEvent) => {
+            e.preventDefault();
+            handleNoSaveWarnModalOpen();
+        },
+        [handleNoSaveWarnModalOpen]
+    );
+    const handleNoSaveCancel = useCallback(
+        (e: MouseEvent) => {
+            e.preventDefault();
+            noSaveWarnModalRef.current?.close();
+        },
+        [noSaveWarnModalRef.current]
+    );
+    const handleNoSaveConfirm = useCallback(
+        (e: MouseEvent) => {
+            e.preventDefault();
+            // oxlint-disable-next-line typescript/no-floating-promises
+            navigate('/');
+        },
+        [navigate]
+    );
     const handleDeleteButtonClick = useCallback(
-        (name: string): MouseEventHandler => {
-            return e => {
+        (name: string): MouseEventHandler =>
+            e => {
                 e.preventDefault();
                 setDeleteTarget(name);
                 handleDeleteWarnModalOpen();
-            };
-        },
-        []
+            },
+        [handleDeleteWarnModalOpen]
     );
-    const handleDeleteCancel = useCallback((e: MouseEvent) => {
-        e.preventDefault();
-        setDeleteTarget('');
-        deleteWarnModalRef.current?.close();
-    }, []);
-    const handleDeleteConfirm = useCallback((e: MouseEvent) => {
-        e.preventDefault();
-        invoke('remove_data', { name: deleteTarget })
-            .then(() => {
-                setEntryNames(entryNames =>
-                    entryNames.toSpliced(entryNames.indexOf(deleteTarget), 1)
+    const handleDeleteCancel = useCallback(
+        (e: MouseEvent) => {
+            e.preventDefault();
+            setDeleteTarget('');
+            deleteWarnModalRef.current?.close();
+        },
+        [deleteWarnModalRef.current]
+    );
+    const handleDeleteConfirm = useCallback(
+        (e: MouseEvent) => {
+            e.preventDefault();
+            invoke('remove_data', { name: deleteTarget })
+                .then(() => {
+                    deleteWarnModalRef.current?.close();
+                    setEntryNames(entryNames =>
+                        entryNames.toSpliced(
+                            entryNames.indexOf(deleteTarget),
+                            1
+                        )
+                    );
+                    setDeleteTarget('');
+                })
+                .catch(alert);
+        },
+        [deleteTarget, deleteWarnModalRef.current]
+    );
+    const handleAdd = useCallback(
+        (e: SubmitEvent) => {
+            e.preventDefault();
+            const formData = addFormSchema.safeParse(
+                Object.fromEntries(new FormData(e.target))
+            );
+            if (!formData.success) {
+                alert(
+                    formData.error.issues.map(issue => issue.message).join('\n')
                 );
-                setDeleteTarget('');
-            })
-            .catch(alert);
-    }, []);
-    const handleAdd = useCallback((e: SubmitEvent) => {
-        e.preventDefault();
-        const formData = addFormSchema.safeParse(
-            Object.fromEntries(new FormData(e.target))
-        );
-        if (!formData.success) {
-            alert(formData.error.issues.map(issue => issue.message).join('\n'));
-            return;
-        }
-        const { data, name } = formData.data;
-        const value = encodeSetDataValue(name, data);
-        invoke('add_data', value)
-            .then(() => {
-                setEntryNames(entryNames => {
-                    if (import.meta.env.DEV && entryNames.includes(name)) {
+                return;
+            }
+            const { data, name } = formData.data;
+            const value = encodeSetDataValue(name, data);
+            invoke('add_data', value)
+                .then(() => {
+                    setEntryNames(entryNames => {
+                        if (import.meta.env.DEV && entryNames.includes(name)) {
+                            return entryNames;
+                        }
+                        entryNames.push(name);
                         return entryNames;
-                    }
-                    entryNames.push(name);
-                    return entryNames;
-                });
-                handleAddModalClose();
-                e.target.reset();
-            })
-            .catch(alert);
-    }, []);
+                    });
+                    handleAddModalClose();
+                    e.target.reset();
+                })
+                .catch(alert);
+        },
+        [handleAddModalClose]
+    );
     useEffect(() => {
         const bankBase = board.banks.at(-1)!.base;
         const bankLength = board.banks.at(-1)!.length;
         const chipFamily = board.chip.family;
         const chipName = board.chip.name;
         invoke('load', { bankBase, bankLength, chipFamily, chipName })
-            .then(names => setEntryNames(names as Array<string>))
-            .catch(err => {
+            .then(names => {
+                // oxlint-disable-next-line typescript/consistent-type-assertions typescript/no-unsafe-type-assertion
+                setEntryNames(names as Array<string>);
+            })
+            // oxlint-disable-next-line promise/prefer-await-to-callbacks
+            .catch(async (err: unknown) => {
                 alert(err);
-                navigate('/');
+                await navigate('/');
             });
-    }, []);
+    }, [board, navigate]);
     return (
         <>
             <div className="flex min-h-screen w-screen flex-col items-center gap-8 px-8 pt-8 pb-16">
@@ -208,6 +242,7 @@ export function Edit(): JSX.Element {
                                 <td className="grid items-center border-r p-2">
                                     <Suspense fallback="(読み込み中...)">
                                         <Await
+                                            // oxlint-disable-next-line react/no-children-prop
                                             children={idFunc}
                                             resolve={getEntryData(name)}
                                         />

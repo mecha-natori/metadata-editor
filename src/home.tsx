@@ -14,8 +14,8 @@ const formatFormSchema = z.object({
         .int('サイズは整数である必要があります。')
         .min(8, 'サイズは8B以上である必要があります。')
         .max(
-            0xffffffff,
-            `サイズは${bytesToString(0xffffffff)}(${0xffffffff}B)以下である必要があります。`
+            0xffff_ffff,
+            `サイズは${bytesToString(0xffff_ffff)}(4294967295B)以下である必要があります。`
         ),
     version: z.enum(['1'])
 });
@@ -54,8 +54,10 @@ export function Home(): JSX.Element {
             if (!formData.success) {
                 setError(
                     <>
-                        {formData.error.issues.map((issue, i) => (
-                            <p key={i}>{issue.message}</p>
+                        {formData.error.issues.map(issue => (
+                            <p key={`${issue.path.join('')}:${issue.message}`}>
+                                {issue.message}
+                            </p>
                         ))}
                     </>
                 );
@@ -90,7 +92,9 @@ export function Home(): JSX.Element {
                         `フォーマットに成功しました！ ベースアドレス:0x${storeBase.toString(16).padStart(8, '0')} サイズ:${bytesToString(storeLength)}(${storeLength}B)`
                     );
                 })
+                // oxlint-disable-next-line promise/prefer-await-to-callbacks
                 .catch((err: unknown) => {
+                    // oxlint-disable-next-line typescript/consistent-type-assertions typescript/no-unsafe-type-assertion
                     setError(err as string);
                 });
         },

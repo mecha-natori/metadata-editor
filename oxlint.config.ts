@@ -34,6 +34,7 @@ export default defineConfig({
         }
     ],
     rules: {
+        'eslint/no-alert': 'off',
         'import/extensions': [
             'error',
             'never',

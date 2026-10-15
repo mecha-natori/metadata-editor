@@ -7,10 +7,10 @@ export interface Board {
     chip: { family: 'esp32' | 'stm32' | 'test'; name: string };
 }
 
-export const testBoard = {
+export const testBoard: Board = {
     banks: [{ base: 0, length: 256 }],
     chip: { family: 'test', name: 'TestBoard' }
-} as Board;
+};
 
 export function getAllBoardNames(): Array<string> {
     return Object.keys(boards);
