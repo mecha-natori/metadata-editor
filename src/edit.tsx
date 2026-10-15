@@ -14,6 +14,7 @@ import {
 import { Await, useNavigate, useParams } from 'react-router';
 import { z } from 'zod';
 import type {
+    ChangeEvent,
     Dispatch,
     JSX,
     MouseEvent,
@@ -22,19 +23,18 @@ import type {
     SubmitEvent
 } from 'react';
 
-const dataSchema = z
+const dataInputSchema = z
     .hex('データは16進数バイト列である必要があります。')
-    .refine(
-        data => data.length % 2 === 0,
-        'データは1バイト単位で用意される必要があります。'
-    );
-const addFormSchema = z.object({
-    data: dataSchema,
-    name: z
-        .string()
-        .min(1, 'エントリ名は最低1文字以上必要です。')
-        .max(255, 'エントリ名は255文字までです。')
-});
+    .toLowerCase();
+const dataSchema = dataInputSchema.refine(
+    data => data.length % 2 === 0,
+    'データは1バイト単位で用意される必要があります。'
+);
+const nameSchema = z
+    .string()
+    .min(1, 'エントリ名は最低1文字以上必要です。')
+    .max(255, 'エントリ名は255文字までです。');
+const addFormSchema = z.object({ data: dataSchema, name: nameSchema });
 const editFormSchema = z.object({ data: dataSchema });
 
 async function getEntryData(name: string): Promise<string> {
@@ -334,7 +334,24 @@ interface AddModalProps {
 }
 
 function AddModal({ openRef, setEntryNames }: AddModalProps): JSX.Element {
+    const [name, setName] = useState('');
+    const [data, setData] = useState('');
     const { Modal, handleClose, handleOpen, open, ref } = useModal();
+    const handleNameChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+        const checked = nameSchema.safeParse(e.currentTarget.value);
+        if (checked.success) {
+            setName(checked.data);
+        }
+    }, []);
+    const handleDataChange = useCallback(
+        (e: ChangeEvent<HTMLTextAreaElement>) => {
+            const checked = dataSchema.safeParse(e.currentTarget.value);
+            if (checked.success) {
+                setData(checked.data);
+            }
+        },
+        []
+    );
     const handleAdd = useCallback(
         (e: SubmitEvent) => {
             e.preventDefault();
@@ -390,8 +407,10 @@ function AddModal({ openRef, setEntryNames }: AddModalProps): JSX.Element {
                                 className="w-0 flex-grow rounded-sm border px-1"
                                 id="add-name"
                                 name="name"
+                                onChange={handleNameChange}
                                 required
                                 type="text"
+                                value={name}
                             />
                         </div>
                     </div>
@@ -404,7 +423,9 @@ function AddModal({ openRef, setEntryNames }: AddModalProps): JSX.Element {
                                 className="w-0 flex-grow rounded-sm border px-1"
                                 id="add-data"
                                 name="data"
+                                onChange={handleDataChange}
                                 required
+                                value={data}
                             />
                         </div>
                     </div>
@@ -530,6 +551,15 @@ function EditModal({ openRefs, syncData }: EditModalProps): JSX.Element {
             },
         [handleOpen]
     );
+    const handleDataChange = useCallback(
+        (e: ChangeEvent<HTMLTextAreaElement>) => {
+            const checked = dataInputSchema.safeParse(e.currentTarget.value);
+            if (checked.success) {
+                setData(checked.data);
+            }
+        },
+        []
+    );
     const handleEdit = useCallback(
         (e: SubmitEvent) => {
             e.preventDefault();
@@ -599,10 +629,11 @@ function EditModal({ openRefs, syncData }: EditModalProps): JSX.Element {
                         <div className="flex w-full flex-row items-center">
                             <textarea
                                 className="w-0 flex-grow rounded-sm border px-1 font-mono"
-                                defaultValue={data}
                                 id="edit-data"
                                 name="data"
+                                onChange={handleDataChange}
                                 required
+                                value={data}
                             />
                         </div>
                     </div>
