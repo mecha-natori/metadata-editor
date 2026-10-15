@@ -15,6 +15,7 @@
     :root {
         --background: oklch(95% 0 0deg);
         --background-backdrop: oklch(0% 0 0deg / 0.5);
+        --background-disabled: oklch(90% 0 0deg);
         --background-error: oklch(95% 0.03 25deg);
         --background-success: oklch(95% 0.035 145deg);
         --border-button-add: oklch(52% 0.16 145deg);
@@ -32,6 +33,7 @@
 
         @media (prefers-color-scheme: dark) {
             --background: oklch(25% 0 0deg);
+            --background-disabled: oklch(31% 0 0deg);
             --background-error: oklch(28% 0.055 25deg);
             --background-success: oklch(28% 0.055 145deg);
             --border-button-add: oklch(84% 0.13 145deg);

@@ -21,6 +21,7 @@ const addFormSchema = z.object({
         .min(1, 'エントリ名は最低1文字以上必要です。')
         .max(255, 'エントリ名は255文字までです。')
 });
+const editFormSchema = z.object({ data: dataSchema });
 
 export function Edit(): JSX.Element {
     const params = useParams<'board'>();
@@ -31,6 +32,8 @@ export function Edit(): JSX.Element {
     const navigate = useNavigate();
     const [entryNames, setEntryNames] = useState<Array<string>>([]);
     const [deleteTarget, setDeleteTarget] = useState('');
+    const [editTarget, setEditTarget] = useState('');
+    const [editData, setEditData] = useState('');
     const {
         Modal: NoSaveWarnModal,
         handleClose: handleNoSaveWarnModalClose,
@@ -51,6 +54,13 @@ export function Edit(): JSX.Element {
         handleOpen: handleDeleteWarnModalOpen,
         open: deleteWarnModalOpen,
         ref: deleteWarnModalRef
+    } = useModal();
+    const {
+        Modal: EditModal,
+        handleClose: handleEditModalClose,
+        handleOpen: handleEditModalOpen,
+        open: editModalOpen,
+        ref: editModalRef
     } = useModal();
     const getEntryData = useCallback(async (name: string): Promise<string> => {
         try {
@@ -136,6 +146,19 @@ export function Edit(): JSX.Element {
         },
         [deleteTarget, deleteWarnModalRef.current]
     );
+    const handleEditButtonClick = useCallback(
+        (name: string): MouseEventHandler =>
+            e => {
+                e.preventDefault();
+                setEditTarget(name);
+                // oxlint-disable-next-line promise/catch-or-return typescript/no-floating-promises
+                getEntryData(name).then(data => {
+                    setEditData(data);
+                    handleEditModalOpen();
+                });
+            },
+        [getEntryData, handleEditModalOpen]
+    );
     const handleAdd = useCallback(
         (e: SubmitEvent) => {
             e.preventDefault();
@@ -165,6 +188,29 @@ export function Edit(): JSX.Element {
                 .catch(alert);
         },
         [handleAddModalClose]
+    );
+    const handleEdit = useCallback(
+        (e: SubmitEvent) => {
+            e.preventDefault();
+            const formData = editFormSchema.safeParse(
+                Object.fromEntries(new FormData(e.target))
+            );
+            if (!formData.success) {
+                alert(
+                    formData.error.issues.map(issue => issue.message).join('\n')
+                );
+                return;
+            }
+            const { data } = formData.data;
+            const value = encodeSetDataValue(editTarget, data);
+            invoke('set_data', value)
+                .then(() => {
+                    handleEditModalClose();
+                    e.target.reset();
+                })
+                .catch(alert);
+        },
+        [editTarget, handleEditModalClose]
     );
     useEffect(() => {
         const bankBase = board.banks.at(-1)!.base;
@@ -251,6 +297,7 @@ export function Edit(): JSX.Element {
                                 <td className="flex flex-row items-center justify-center p-2">
                                     <button
                                         className="cursor-pointer rounded-xl border bg-(--foreground) px-4 py-2 text-(--background) transition-colors duration-200 hover:bg-(--hover-background) hover:text-(--foreground)"
+                                        onClick={handleEditButtonClick(name)}
                                         type="button"
                                     >
                                         編集
@@ -312,6 +359,52 @@ export function Edit(): JSX.Element {
                     </button>
                 </form>
             </AddModal>
+            <EditModal
+                onClose={handleEditModalClose}
+                open={editModalOpen}
+                ref={editModalRef}
+            >
+                <form
+                    className="my-4 flex flex-col items-center justify-center gap-8"
+                    onSubmit={handleEdit}
+                >
+                    <div className="flex w-full flex-col items-center justify-center gap-4">
+                        <div className="flex w-full flex-col items-center justify-center gap-2">
+                            <label htmlFor="edit-name">エントリ名:</label>
+                            <div className="flex w-full flex-row items-center">
+                                <input
+                                    className="w-0 flex-grow cursor-not-allowed rounded-sm bg-(--background-disabled) px-1"
+                                    disabled
+                                    id="edit-name"
+                                    name="name"
+                                    type="text"
+                                    value={editTarget}
+                                />
+                            </div>
+                        </div>
+                        <div className="flex w-full flex-col items-center justify-center gap-2">
+                            <label htmlFor="edit-data">
+                                データ(バイト列・16進数):
+                            </label>
+                            <div className="flex w-full flex-row items-center">
+                                <textarea
+                                    className="w-0 flex-grow rounded-sm border px-1"
+                                    defaultValue={editData}
+                                    id="edit-data"
+                                    name="data"
+                                    required
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <button
+                        className="cursor-pointer rounded-4xl bg-(--foreground) px-12 py-3 text-(--background) transition-colors duration-200 hover:bg-(--hover-background) hover:text-(--hover-foreground)"
+                        type="submit"
+                    >
+                        更新
+                    </button>
+                </form>
+            </EditModal>
             <DeleteWarnModal
                 className="flex flex-col gap-8"
                 onClose={handleDeleteWarnModalClose}
