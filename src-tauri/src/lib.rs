@@ -16,6 +16,7 @@ pub fn run() -> anyhow::Result<()> {
     env_logger::init();
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
+            cmd::add_data,
             cmd::format,
             cmd::get_data,
             cmd::load,

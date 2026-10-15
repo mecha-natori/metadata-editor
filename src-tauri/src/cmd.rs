@@ -95,42 +95,38 @@ pub fn get_data(name: &str, state: State<'_, Mutex<AppState>>) -> Result<Respons
 
 #[tauri::command]
 pub fn set_data(req: Request, state: State<'_, Mutex<AppState>>) -> Result<(), String> {
-    let InvokeBody::Raw(bytes) = req.body() else {
-        return Err("データの設定に失敗しました。".into());
-    };
-    let (name, bytes) = {
-        let mut reader = Cursor::new(bytes);
-        let mut buf = [0; 1];
-        reader
-            .read_exact(&mut buf)
-            .map_err(|_| "エントリ名長の読み取りに失敗しました。")?;
-        let name_len = buf[0];
-        let mut buf = vec![0; name_len.into()];
-        reader
-            .read_exact(&mut buf)
-            .map_err(|_| "エントリ名の読み取りに失敗しました。")?;
-        let name = String::from_utf8(buf).map_err(|_| "不正なエントリ名です。")?;
-        let bytes = &bytes[reader.position() as usize..];
-        (name, bytes)
-    };
+    let (name, bytes) = decode_set_data_request(&req)?;
     let mut state = state.lock().unwrap();
     let store = state
         .store
         .as_mut()
         .ok_or("ストアがロードされていません。")?
         .get_mut();
-    let entry = {
-        let entry = store.get_entry_mut(&name);
-        match entry {
-            Some(entry) => entry,
-            None => {
-                store
-                    .create_entry(&name, [])
-                    .map_err(|_| "エントリの作成に失敗しました。")?;
-                store.get_entry_mut(&name).unwrap()
-            }
-        }
-    };
+    let entry = match store.get_entry_mut(name) {
+        Some(entry) => Ok(entry),
+        None => Err("エントリが存在しません。")
+    }?;
+    entry.clear();
+    entry.extend_from_slice(bytes);
+    Ok(())
+}
+
+#[tauri::command]
+pub fn add_data(req: Request, state: State<'_, Mutex<AppState>>) -> Result<(), String> {
+    let (name, bytes) = decode_set_data_request(&req)?;
+    let mut state = state.lock().unwrap();
+    let store = state
+        .store
+        .as_mut()
+        .ok_or("ストアがロードされていません。")?
+        .get_mut();
+    if store.get_entry(&name).is_some() {
+        return Err("エントリが既に存在します。".into());
+    }
+    store
+        .create_entry(&name, [])
+        .map_err(|_| "エントリの作成に失敗しました。")?;
+    let entry = store.get_entry_mut(name).unwrap();
     entry.clear();
     entry.extend_from_slice(bytes);
     Ok(())
@@ -154,4 +150,23 @@ pub fn save(state: State<'_, Mutex<AppState>>) -> Result<(), String> {
         state.chip_name.clone().unwrap()
     )?;
     Ok(())
+}
+
+fn decode_set_data_request<'a>(req: &'a Request) -> Result<(String, &'a [u8]), String> {
+    let InvokeBody::Raw(bytes) = req.body() else {
+        return Err("データの設定に失敗しました。".into());
+    };
+    let mut reader = Cursor::new(bytes);
+    let mut buf = [0; 1];
+    reader
+        .read_exact(&mut buf)
+        .map_err(|_| "エントリ名長の読み取りに失敗しました。")?;
+    let name_len = buf[0];
+    let mut buf = vec![0; name_len.into()];
+    reader
+        .read_exact(&mut buf)
+        .map_err(|_| "エントリ名の読み取りに失敗しました。")?;
+    let name = String::from_utf8(buf).map_err(|_| "不正なエントリ名です。")?;
+    let bytes = &bytes[reader.position() as usize..];
+    Ok((name, bytes))
 }
