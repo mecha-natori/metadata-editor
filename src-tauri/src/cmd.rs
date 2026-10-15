@@ -115,7 +115,18 @@ pub fn set_data(req: Request, state: State<'_, Mutex<AppState>>) -> Result<(), S
         .as_mut()
         .ok_or("ストアがロードされていません。")?
         .get_mut();
-    let entry = store.get_entry_mut(name).ok_or("エントリが存在しません")?;
+    let entry = {
+        let entry = store.get_entry_mut(&name);
+        match entry {
+            Some(entry) => entry,
+            None => {
+                store
+                    .create_entry(&name, [])
+                    .map_err(|_| "エントリの作成に失敗しました。")?;
+                store.get_entry_mut(&name).unwrap()
+            }
+        }
+    };
     entry.clone_from_slice(bytes);
     Ok(())
 }
