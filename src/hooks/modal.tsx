@@ -2,7 +2,7 @@ import { useSwitchState } from './switch-state';
 import { useCallback, useEffect, useRef } from 'react';
 import type {
     DetailedHTMLProps,
-    DialogHTMLAttributes,
+    HTMLAttributes,
     JSX,
     PropsWithChildren,
     RefObject
@@ -28,11 +28,8 @@ export function useModal(
 
 export interface ModalProps extends PropsWithChildren<
     Omit<
-        DetailedHTMLProps<
-            DialogHTMLAttributes<HTMLDialogElement>,
-            HTMLDialogElement
-        >,
-        'open'
+        DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>,
+        'ref'
     >
 > {
     onClose: () => void;
@@ -42,7 +39,7 @@ export interface ModalProps extends PropsWithChildren<
 
 function Modal({
     children,
-    className,
+    onClose,
     open,
     ref,
     ...props
@@ -64,11 +61,11 @@ function Modal({
     }, [open]);
     return (
         <dialog
-            className={`m-auto min-h-24 min-w-24 rounded-2xl border border-(--border-modal) px-8 pt-16 pb-6 backdrop:bg-(--background-backdrop) ${className ?? ''}`}
+            className="m-auto min-h-24 min-w-24 rounded-2xl border border-(--border-modal) px-8 pt-16 pb-6 backdrop:bg-(--background-backdrop)"
+            onClose={onClose}
             ref={ref}
-            {...props}
         >
-            {children}
+            <div {...props}>{children}</div>
             <button
                 className="absolute top-2 right-2 cursor-pointer rounded-md bg-(--foreground) px-2 py-1 text-sm text-(--background) transition-colors duration-200 hover:bg-(--hover-background) hover:text-(--hover-foreground)"
                 onClick={handleClose}
