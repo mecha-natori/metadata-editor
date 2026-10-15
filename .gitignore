@@ -16,6 +16,7 @@ logs/
 node_modules/
 npm-debug.log*
 pnpm-debug.log*
+public/fonts/
 target/
 
 !.env.example

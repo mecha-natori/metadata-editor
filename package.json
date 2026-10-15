@@ -17,6 +17,7 @@
         "@vitejs/plugin-react": "^6.1.1",
         "eslint-plugin-perfectionist": "^5.12.1",
         "globals": "^17.12.0",
+        "js-toml": "^2.0.1",
         "lightningcss": "^1.33.0",
         "npm-run-all": "^4.1.5",
         "oxfmt": "catalog:",
@@ -41,7 +42,7 @@
     "packageManager": "pnpm@11.25.0",
     "private": true,
     "scripts": {
-        "build": "vite build",
+        "build": "node ./tools/get-noto-sans-mono.ts && vite build",
         "check": "oxfmt --check",
         "clean": "rimraf ./dist/",
         "dev": "vite",

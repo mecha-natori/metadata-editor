@@ -3,7 +3,17 @@
 /* stylelint-disable import-notation */
 @import 'tailwindcss';
 
+@font-face {
+    font-family: 'Noto Sans Mono';
+    font-stretch: 100%;
+    font-style: normal;
+    font-weight: 400;
+    src: url('/fonts/NotoSansMono.woff2') format('woff2');
+    unicode-range: U+30-39, U+61-66;
+}
+
 @theme {
+    --font-mono: 'Noto Sans Mono', 'Source Code Pro', ui-monospace, monospace;
     --font-sans:
         'Noto Sans JP', 'Noto Sans CJK JP', 'Helvetica Neue', 'Helvetica',
         'Arial', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic',

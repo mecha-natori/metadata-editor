@@ -211,7 +211,7 @@ export function Edit(): JSX.Element {
                                 <td className="grid items-center border-r p-2">
                                     {name}
                                 </td>
-                                <td className="grid items-center border-r p-2">
+                                <td className="grid items-center border-r p-2 font-mono">
                                     <Suspense fallback="(読み込み中...)">
                                         <Await
                                             // oxlint-disable-next-line react/no-children-prop
@@ -598,7 +598,7 @@ function EditModal({ openRefs, syncData }: EditModalProps): JSX.Element {
                         </label>
                         <div className="flex w-full flex-row items-center">
                             <textarea
-                                className="w-0 flex-grow rounded-sm border px-1"
+                                className="w-0 flex-grow rounded-sm border px-1 font-mono"
                                 defaultValue={data}
                                 id="edit-data"
                                 name="data"

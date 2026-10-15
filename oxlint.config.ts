@@ -17,7 +17,12 @@ export default defineConfig({
             })
         },
         {
-            files: ['oxfmt.config.ts', 'oxlint.config.ts', 'vite.config.ts'],
+            files: [
+                'oxfmt.config.ts',
+                'oxlint.config.ts',
+                'tools/**/*.ts',
+                'vite.config.ts'
+            ],
             globals: convertGlobals({
                 ...globals.builtin,
                 ...globals.es2026,
