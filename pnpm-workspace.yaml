@@ -1,5 +1,12 @@
+catalog:
+  oxfmt: '^0.66.0'
+  oxlint: '^1.81.0'
+  oxlint-tsgolint: '^7.0.2001'
 minimumReleaseAge: 10080
 overrides:
+  '@jsr/ms0503__oxc-config>oxfmt': 'catalog:'
+  '@jsr/ms0503__oxc-config>oxlint': 'catalog:'
+  '@jsr/ms0503__oxc-config>oxlint-tsgolint': 'catalog:'
   '@typescript-eslint/project-service>typescript': 'npm:@typescript/typescript6@^6.0.2'
   '@typescript-eslint/tsconfig-utils>typescript': 'npm:@typescript/typescript6@^6.0.2'
   '@typescript-eslint/typescript-estree>typescript': 'npm:@typescript/typescript6@^6.0.2'
