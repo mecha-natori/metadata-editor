@@ -7,28 +7,9 @@ const config = {
     ],
     rules: {
         'alpha-value-notation': 'number',
-        'at-rule-no-deprecated': [true, { ignoreAtRules: ['apply'] }],
-        'at-rule-no-unknown': [
-            true,
-            {
-                ignoreAtRules: [
-                    'apply',
-                    'config',
-                    'custom-variant',
-                    'layer',
-                    'plugin',
-                    'reference',
-                    'responsive',
-                    'screen',
-                    'source',
-                    'tailwind',
-                    'theme',
-                    'utility',
-                    'variant',
-                    'variants'
-                ]
-            }
-        ],
+        'at-rule-no-deprecated': true,
+        'at-rule-no-unknown': [true, { ignoreAtRules: ['theme'] }],
+        'at-rule-prelude-no-invalid': [true, { ignoreAtRules: ['apply'] }],
         'color-hex-length': 'short',
         'function-no-unknown': [true, { ignoreFunctions: ['theme'] }],
         'length-zero-no-unit': true,
