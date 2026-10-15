@@ -15,12 +15,13 @@ export function Edit(): JSX.Element {
             : getBoard(params.board!)!;
     const navigate = useNavigate();
     const [entryNames, setEntryNames] = useState<Array<string>>([]);
-    const [
-        noSaveWarnModalOpen,
-        handleNoSaveWarnModalClose,
-        handleNoSaveWarnModalOpen
-    ] = useSwitchState(false);
-    const { Modal: NoSaveWarnModal, ref: noSaveWarnModalRef } = useModal();
+    const {
+        Modal: NoSaveWarnModal,
+        handleClose: handleNoSaveWarnModalClose,
+        handleOpen: handleNoSaveWarnModalOpen,
+        open: noSaveWarnModalOpen,
+        ref: noSaveWarnModalRef
+    } = useModal();
     const getEntryData = useCallback(async (name: string): Promise<string> => {
         try {
             return invoke('get_data', { name }).then(data =>

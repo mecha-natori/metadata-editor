@@ -1,6 +1,5 @@
 import { useModal } from './hooks/modal';
 import { useResult } from './hooks/result';
-import { useSwitchState } from './hooks/switch-state';
 import { getAllBoardNames, getBoard } from '@/lib/boards';
 import { invoke } from '@tauri-apps/api/core';
 import { useCallback, useState } from 'react';
@@ -27,9 +26,13 @@ export function Home(): JSX.Element {
     const versions = Object.values(formatFormSchema.shape.version.enum);
     const [board, setBoard] = useState(boards[0]);
     const [length, setLength] = useState(8);
-    const [formatModalOpen, handleFormatModalClose, handleFormatModalOpen] =
-        useSwitchState(false);
-    const { Modal: FormatModal, ref: formatModalRef } = useModal();
+    const {
+        Modal: FormatModal,
+        handleClose: handleFormatModalClose,
+        handleOpen: handleFormatModalOpen,
+        open: formatModalOpen,
+        ref: formatModalRef
+    } = useModal();
     const handleBoardChange = useCallback(
         (e: ChangeEvent<HTMLSelectElement, HTMLSelectElement>) => {
             setBoard(e.currentTarget.value);

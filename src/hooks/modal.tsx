@@ -1,3 +1,4 @@
+import { useSwitchState } from './switch-state';
 import { useCallback, useEffect, useRef } from 'react';
 import type {
     DetailedHTMLProps,
@@ -9,12 +10,20 @@ import type {
 
 export interface UseModalResult {
     Modal: (props: ModalProps) => JSX.Element;
+    handleClose: ModalProps['onClose'];
+    handleOpen: () => void;
+    open: ModalProps['open'];
     ref: ModalProps['ref'];
 }
 
-export function useModal(): UseModalResult {
+export function useModal(
+    initialState: 'close' | 'open' = 'close'
+): UseModalResult {
     const ref = useRef<HTMLDialogElement>(null);
-    return { Modal, ref };
+    const [open, handleClose, handleOpen] = useSwitchState(
+        initialState === 'open'
+    );
+    return { Modal, handleClose, handleOpen, open, ref };
 }
 
 export interface ModalProps extends PropsWithChildren<
