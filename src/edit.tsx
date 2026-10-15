@@ -52,7 +52,7 @@ async function getEntryData(name: string): Promise<string> {
 export function Edit(): JSX.Element {
     const params = useParams<'board'>();
     const board =
-        import.meta.env.DEV && params.board === 'test'
+        import.meta.env.TAURI_ENV_DEBUG && params.board === 'test'
             ? testBoard
             : getBoard(params.board!)!;
     const navigate = useNavigate();
@@ -369,7 +369,10 @@ function AddModal({ openRef, setEntryNames }: AddModalProps): JSX.Element {
             invoke('add_data', value)
                 .then(() => {
                     setEntryNames(entryNames => {
-                        if (import.meta.env.DEV && entryNames.includes(name)) {
+                        if (
+                            import.meta.env.TAURI_ENV_DEBUG &&
+                            entryNames.includes(name)
+                        ) {
                             return entryNames;
                         }
                         entryNames.push(name);

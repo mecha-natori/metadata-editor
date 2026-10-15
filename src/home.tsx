@@ -142,7 +142,7 @@ export function Home(): JSX.Element {
                             読み込む
                         </button>
                     </Link>
-                    {import.meta.env.DEV && (
+                    {import.meta.env.TAURI_ENV_DEBUG && (
                         <Link to="/edit/test">
                             <button
                                 className="cursor-pointer rounded-4xl border bg-(--foreground) px-8 py-3 text-lg text-(--background) transition-colors duration-200 hover:bg-(--hover-background) hover:text-(--foreground)"

@@ -13,6 +13,7 @@ export default defineConfig({
         ssrEmitAssets: true
     },
     clearScreen: false,
+    envPrefix: ['TAURI_ENV_', 'VITE_'],
     plugins: [react(), tailwindcss()],
     resolve: { builtins: [/^node:/u], tsconfigPaths: true },
     server: {
