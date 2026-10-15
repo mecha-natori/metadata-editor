@@ -6,7 +6,7 @@ import { invoke } from '@tauri-apps/api/core';
 import { Suspense, useCallback, useEffect, useState } from 'react';
 import { Await, useNavigate, useParams } from 'react-router';
 import { z } from 'zod';
-import type { JSX, MouseEvent, SubmitEvent } from 'react';
+import type { JSX, MouseEvent, MouseEventHandler, SubmitEvent } from 'react';
 
 const dataSchema = z
     .hex('データは16進数バイト列である必要があります。')
@@ -30,6 +30,7 @@ export function Edit(): JSX.Element {
             : getBoard(params.board!)!;
     const navigate = useNavigate();
     const [entryNames, setEntryNames] = useState<Array<string>>([]);
+    const [deleteTarget, setDeleteTarget] = useState('');
     const {
         Modal: NoSaveWarnModal,
         handleClose: handleNoSaveWarnModalClose,
@@ -43,6 +44,13 @@ export function Edit(): JSX.Element {
         handleOpen: handleAddModalOpen,
         open: addModalOpen,
         ref: addModalRef
+    } = useModal();
+    const {
+        Modal: DeleteWarnModal,
+        handleClose: handleDeleteWarnModalClose,
+        handleOpen: handleDeleteWarnModalOpen,
+        open: deleteWarnModalOpen,
+        ref: deleteWarnModalRef
     } = useModal();
     const getEntryData = useCallback(async (name: string): Promise<string> => {
         try {
@@ -83,6 +91,41 @@ export function Edit(): JSX.Element {
         (e: MouseEvent<HTMLButtonElement>) => {
             e.preventDefault();
             navigate('/');
+        },
+        []
+    );
+    const handleDeleteButtonClick = useCallback(
+        (name: string): MouseEventHandler<HTMLButtonElement> => {
+            return e => {
+                e.preventDefault();
+                setDeleteTarget(name);
+                handleDeleteWarnModalOpen();
+            };
+        },
+        []
+    );
+    const handleDeleteCancel = useCallback(
+        (e: MouseEvent<HTMLButtonElement>) => {
+            e.preventDefault();
+            setDeleteTarget('');
+            deleteWarnModalRef.current?.close();
+        },
+        []
+    );
+    const handleDeleteConfirm = useCallback(
+        (e: MouseEvent<HTMLButtonElement>) => {
+            e.preventDefault();
+            invoke('remove_data', { name: deleteTarget })
+                .then(() => {
+                    setEntryNames(entryNames =>
+                        entryNames.toSpliced(
+                            entryNames.indexOf(deleteTarget),
+                            1
+                        )
+                    );
+                    setDeleteTarget('');
+                })
+                .catch(alert);
         },
         []
     );
@@ -197,6 +240,7 @@ export function Edit(): JSX.Element {
                                     </button>
                                     <button
                                         className="cursor-pointer rounded-xl border border-(--border-button-delete) bg-(--button-delete) px-4 py-2 transition-colors duration-200 hover:bg-(--hover-button-delete) hover:text-(--foreground)"
+                                        onClick={handleDeleteButtonClick(name)}
                                         type="button"
                                     >
                                         削除
@@ -251,6 +295,32 @@ export function Edit(): JSX.Element {
                     </button>
                 </form>
             </AddModal>
+            <DeleteWarnModal
+                className="flex flex-col gap-8"
+                onClose={handleDeleteWarnModalClose}
+                open={deleteWarnModalOpen}
+                ref={deleteWarnModalRef}
+            >
+                <p className="text-lg font-bold">
+                    エントリの削除後は復元できません。本当に良いですか？
+                </p>
+                <div className="flex flex-col justify-between gap-4 md:flex-row md:gap-0">
+                    <button
+                        className="cursor-pointer rounded-4xl border bg-(--foreground) px-8 py-3 text-lg text-(--background) transition-colors duration-200 hover:bg-(--hover-background) hover:text-(--foreground) md:w-max"
+                        onClick={handleDeleteCancel}
+                        type="button"
+                    >
+                        削除しない
+                    </button>
+                    <button
+                        className="cursor-pointer rounded-4xl border border-(--border-button-delete) bg-(--button-delete) px-8 py-3 text-lg transition-colors duration-200 hover:bg-(--hover-button-delete) hover:text-(--foreground) md:w-max"
+                        onClick={handleDeleteConfirm}
+                        type="button"
+                    >
+                        削除する
+                    </button>
+                </div>
+            </DeleteWarnModal>
             <NoSaveWarnModal
                 className="flex flex-col gap-8"
                 onClose={handleNoSaveWarnModalClose}

@@ -133,6 +133,23 @@ pub fn add_data(req: Request, state: State<'_, Mutex<AppState>>) -> Result<(), S
 }
 
 #[tauri::command]
+pub fn remove_data(name: &str, state: State<'_, Mutex<AppState>>) -> Result<(), String> {
+    let mut state = state.lock().unwrap();
+    let store = state
+        .store
+        .as_mut()
+        .ok_or("ストアがロードされていません。")?
+        .get_mut();
+    if store.get_entry(name).is_none() {
+        return Err("エントリが存在しません。".into());
+    }
+    store
+        .remove_entry(name)
+        .map_err(|_| "エントリの削除に失敗しました。")?;
+    Ok(())
+}
+
+#[tauri::command]
 pub fn save(state: State<'_, Mutex<AppState>>) -> Result<(), String> {
     let state = state.lock().unwrap();
     if state.chip_family == Some(ChipFamily::Test) {
