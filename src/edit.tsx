@@ -61,7 +61,7 @@ export function Edit(): JSX.Element {
             return `(取得失敗: ${err})`;
         }
     }, []);
-    const handleSave = useCallback((e: MouseEvent<HTMLButtonElement>) => {
+    const handleSave = useCallback((e: MouseEvent) => {
         e.preventDefault();
         invoke('save')
             .then(() => {
@@ -69,33 +69,24 @@ export function Edit(): JSX.Element {
             })
             .catch(alert);
     }, []);
-    const handleSaveClose = useCallback((e: MouseEvent<HTMLButtonElement>) => {
+    const handleSaveClose = useCallback((e: MouseEvent) => {
         handleSave(e);
         navigate('/');
     }, []);
-    const handleNoSaveClose = useCallback(
-        (e: MouseEvent<HTMLButtonElement>) => {
-            e.preventDefault();
-            handleNoSaveWarnModalOpen();
-        },
-        []
-    );
-    const handleNoSaveCancel = useCallback(
-        (e: MouseEvent<HTMLButtonElement>) => {
-            e.preventDefault();
-            noSaveWarnModalRef.current?.close();
-        },
-        []
-    );
-    const handleNoSaveConfirm = useCallback(
-        (e: MouseEvent<HTMLButtonElement>) => {
-            e.preventDefault();
-            navigate('/');
-        },
-        []
-    );
+    const handleNoSaveClose = useCallback((e: MouseEvent) => {
+        e.preventDefault();
+        handleNoSaveWarnModalOpen();
+    }, []);
+    const handleNoSaveCancel = useCallback((e: MouseEvent) => {
+        e.preventDefault();
+        noSaveWarnModalRef.current?.close();
+    }, []);
+    const handleNoSaveConfirm = useCallback((e: MouseEvent) => {
+        e.preventDefault();
+        navigate('/');
+    }, []);
     const handleDeleteButtonClick = useCallback(
-        (name: string): MouseEventHandler<HTMLButtonElement> => {
+        (name: string): MouseEventHandler => {
             return e => {
                 e.preventDefault();
                 setDeleteTarget(name);
@@ -104,32 +95,23 @@ export function Edit(): JSX.Element {
         },
         []
     );
-    const handleDeleteCancel = useCallback(
-        (e: MouseEvent<HTMLButtonElement>) => {
-            e.preventDefault();
-            setDeleteTarget('');
-            deleteWarnModalRef.current?.close();
-        },
-        []
-    );
-    const handleDeleteConfirm = useCallback(
-        (e: MouseEvent<HTMLButtonElement>) => {
-            e.preventDefault();
-            invoke('remove_data', { name: deleteTarget })
-                .then(() => {
-                    setEntryNames(entryNames =>
-                        entryNames.toSpliced(
-                            entryNames.indexOf(deleteTarget),
-                            1
-                        )
-                    );
-                    setDeleteTarget('');
-                })
-                .catch(alert);
-        },
-        []
-    );
-    const handleAdd = useCallback((e: SubmitEvent<HTMLFormElement>) => {
+    const handleDeleteCancel = useCallback((e: MouseEvent) => {
+        e.preventDefault();
+        setDeleteTarget('');
+        deleteWarnModalRef.current?.close();
+    }, []);
+    const handleDeleteConfirm = useCallback((e: MouseEvent) => {
+        e.preventDefault();
+        invoke('remove_data', { name: deleteTarget })
+            .then(() => {
+                setEntryNames(entryNames =>
+                    entryNames.toSpliced(entryNames.indexOf(deleteTarget), 1)
+                );
+                setDeleteTarget('');
+            })
+            .catch(alert);
+    }, []);
+    const handleAdd = useCallback((e: SubmitEvent) => {
         e.preventDefault();
         const formData = addFormSchema.safeParse(
             Object.fromEntries(new FormData(e.target))

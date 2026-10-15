@@ -34,19 +34,19 @@ export function Home(): JSX.Element {
         ref: formatModalRef
     } = useModal();
     const handleBoardChange = useCallback(
-        (e: ChangeEvent<HTMLSelectElement, HTMLSelectElement>) => {
+        (e: ChangeEvent<HTMLSelectElement>) => {
             setBoard(e.currentTarget.value);
         },
         []
     );
     const handleLengthChange = useCallback(
-        (e: ChangeEvent<HTMLInputElement, HTMLInputElement>) => {
+        (e: ChangeEvent<HTMLInputElement>) => {
             setLength(Number.parseInt(e.currentTarget.value, 10));
         },
         []
     );
     const handleFormat = useCallback(
-        (e: SubmitEvent<HTMLFormElement>) => {
+        (e: SubmitEvent) => {
             e.preventDefault();
             const formData = formatFormSchema.safeParse(
                 Object.fromEntries(new FormData(e.target))
