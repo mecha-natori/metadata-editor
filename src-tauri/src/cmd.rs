@@ -101,11 +101,15 @@ pub fn set_data(req: Request, state: State<'_, Mutex<AppState>>) -> Result<(), S
     let (name, bytes) = {
         let mut reader = Cursor::new(bytes);
         let mut buf = [0; 1];
-        reader.read_exact(&mut buf).map_err(|_| "")?;
+        reader
+            .read_exact(&mut buf)
+            .map_err(|_| "エントリ名長の読み取りに失敗しました。")?;
         let name_len = buf[0];
         let mut buf = vec![0; name_len.into()];
-        reader.read_exact(&mut buf).map_err(|_| "")?;
-        let name = String::from_utf8(buf).map_err(|_| "")?;
+        reader
+            .read_exact(&mut buf)
+            .map_err(|_| "エントリ名の読み取りに失敗しました。")?;
+        let name = String::from_utf8(buf).map_err(|_| "不正なエントリ名です。")?;
         let bytes = &bytes[reader.position() as usize..];
         (name, bytes)
     };
