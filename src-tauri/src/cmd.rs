@@ -102,10 +102,9 @@ pub fn set_data(req: Request, state: State<'_, Mutex<AppState>>) -> Result<(), S
         .as_mut()
         .ok_or("ストアがロードされていません。")?
         .get_mut();
-    let entry = match store.get_entry_mut(name) {
-        Some(entry) => Ok(entry),
-        None => Err("エントリが存在しません。")
-    }?;
+    let entry = store
+        .get_entry_mut(name)
+        .ok_or("エントリが存在しません。")?;
     entry.clear();
     entry.extend_from_slice(bytes);
     Ok(())
@@ -120,12 +119,9 @@ pub fn add_data(req: Request, state: State<'_, Mutex<AppState>>) -> Result<(), S
         .as_mut()
         .ok_or("ストアがロードされていません。")?
         .get_mut();
-    if store.get_entry(&name).is_some() {
-        return Err("エントリが既に存在します。".into());
-    }
     store
         .create_entry(&name, [])
-        .map_err(|_| "エントリの作成に失敗しました。")?;
+        .map_err(|err| format!("エントリの作成に失敗しました: {}", err))?;
     let entry = store.get_entry_mut(name).unwrap();
     entry.clear();
     entry.extend_from_slice(bytes);
@@ -146,6 +142,24 @@ pub fn remove_data(name: &str, state: State<'_, Mutex<AppState>>) -> Result<(), 
     store
         .remove_entry(name)
         .map_err(|_| "エントリの削除に失敗しました。")?;
+    Ok(())
+}
+
+#[tauri::command]
+pub fn rename_data(
+    new_name: &str,
+    old_name: &str,
+    state: State<'_, Mutex<AppState>>
+) -> Result<(), String> {
+    let mut state = state.lock().unwrap();
+    let store = state
+        .store
+        .as_mut()
+        .ok_or("ストアがロードされていません。")?
+        .get_mut();
+    store
+        .rename_entry(old_name, new_name)
+        .map_err(|err| format!("エントリ名の変更に失敗しました: {}", err))?;
     Ok(())
 }
 

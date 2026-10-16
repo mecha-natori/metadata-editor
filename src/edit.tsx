@@ -1,3 +1,4 @@
+import { TrackedButton } from './components/tracked-button';
 import { useModal } from './hooks/modal';
 import { getBoard, testBoard } from './lib/boards';
 import { encodeSetDataValue } from './lib/encode';
@@ -36,6 +37,7 @@ const nameSchema = z
     .max(255, 'エントリ名は255文字までです。');
 const addFormSchema = z.object({ data: dataSchema, name: nameSchema });
 const editFormSchema = z.object({ data: dataSchema });
+const renameFormSchema = z.object({ newName: nameSchema, oldName: nameSchema });
 
 async function getEntryData(name: string): Promise<string> {
     try {
@@ -62,6 +64,9 @@ export function Edit(): JSX.Element {
         ReadonlyMap<string, HTMLButtonElement>
     >(new Map());
     const [editButtonRefs, setEditButtonRefs] = useState<
+        ReadonlyMap<string, HTMLButtonElement>
+    >(new Map());
+    const [renameButtonRefs, setRenameButtonRefs] = useState<
         ReadonlyMap<string, HTMLButtonElement>
     >(new Map());
     const addOpenRef = useRef<HTMLButtonElement>(null);
@@ -122,6 +127,41 @@ export function Edit(): JSX.Element {
         },
         []
     );
+    const handleRenameButtonAttach = useCallback(
+        (name: string, node: HTMLButtonElement) => {
+            setRenameButtonRefs(prev => {
+                if (prev.get(name) === node) {
+                    return prev;
+                }
+                const next = new Map(prev);
+                // oxlint-disable-next-line unicorn/no-immediate-mutation
+                next.set(name, node);
+                return next;
+            });
+        },
+        []
+    );
+    const handleRenameButtonDetach = useCallback(
+        (name: string, node: HTMLButtonElement) => {
+            setRenameButtonRefs(prev => {
+                if (prev.get(name) !== node) {
+                    return prev;
+                }
+                const next = new Map(prev);
+                // oxlint-disable-next-line unicorn/no-immediate-mutation
+                next.delete(name);
+                return next;
+            });
+        },
+        []
+    );
+    const handleSyncName = useCallback((oldName: string, newName: string) => {
+        setEntryNames(prev => {
+            const next = structuredClone(prev);
+            next[next.indexOf(oldName)] = newName;
+            return next;
+        });
+    }, []);
     const handleSave = useCallback((e: MouseEvent) => {
         e.preventDefault();
         invoke('save')
@@ -208,8 +248,15 @@ export function Edit(): JSX.Element {
                                 className="col-span-full grid grid-cols-subgrid border-t border-(--border-table)"
                                 key={name}
                             >
-                                <td className="grid items-center border-r p-2">
-                                    {name}
+                                <td className="flex flex-row items-center justify-between border-r p-2">
+                                    <p className="grid items-center">{name}</p>
+                                    <TrackedButton
+                                        name={name}
+                                        onAttach={handleRenameButtonAttach}
+                                        onDetach={handleRenameButtonDetach}
+                                    >
+                                        リネーム
+                                    </TrackedButton>
                                 </td>
                                 <td className="grid items-center border-r p-2 font-mono">
                                     <Suspense fallback="(読み込み中...)">
@@ -221,16 +268,24 @@ export function Edit(): JSX.Element {
                                     </Suspense>
                                 </td>
                                 <td className="flex flex-row items-center justify-center p-2">
-                                    <EditButton
+                                    <TrackedButton
                                         name={name}
                                         onAttach={handleEditButtonAttach}
                                         onDetach={handleEditButtonDetach}
-                                    />
-                                    <DeleteButton
+                                    >
+                                        編集
+                                    </TrackedButton>
+                                    <TrackedButton
+                                        bgClassName="bg-(--button-delete)"
+                                        className="border-(--border-button-delete)"
+                                        hoverBgClassName="hover:bg-(--hover-button-delete)"
                                         name={name}
                                         onAttach={handleDeleteButtonAttach}
                                         onDetach={handleDeleteButtonDetach}
-                                    />
+                                        textClassName="text-(--foreground)"
+                                    >
+                                        削除
+                                    </TrackedButton>
                                 </td>
                             </tr>
                         ))}
@@ -250,81 +305,11 @@ export function Edit(): JSX.Element {
                 syncData={syncData}
             />
             <NoSaveWarnModal openRef={noSaveWarnOpenRef} />
+            <RenameModal
+                onSyncName={handleSyncName}
+                openRefs={renameButtonRefs}
+            />
         </>
-    );
-}
-
-interface DeleteButtonProps {
-    name: string;
-
-    onAttach: (name: string, node: HTMLButtonElement) => void;
-
-    onDetach: (name: string, node: HTMLButtonElement) => void;
-}
-
-function DeleteButton({
-    name,
-    onAttach: handleAttach,
-    onDetach: handleDetach
-}: DeleteButtonProps): JSX.Element {
-    const ref = useCallback(
-        (node: HTMLButtonElement | null) => {
-            if (!node) {
-                // oxlint-disable-next-line eslint/no-undefined unicorn/no-useless-undefined
-                return undefined;
-            }
-            handleAttach(name, node);
-            return () => {
-                handleDetach(name, node);
-            };
-        },
-        [handleAttach, handleDetach, name]
-    );
-    return (
-        <button
-            className="cursor-pointer rounded-xl border border-(--border-button-delete) bg-(--button-delete) px-4 py-2 transition-colors duration-200 hover:bg-(--hover-button-delete) hover:text-(--foreground)"
-            ref={ref}
-            type="button"
-        >
-            削除
-        </button>
-    );
-}
-
-interface EditButtonProps {
-    name: string;
-
-    onAttach: (name: string, node: HTMLButtonElement) => void;
-
-    onDetach: (name: string, node: HTMLButtonElement) => void;
-}
-
-function EditButton({
-    name,
-    onAttach: handleAttach,
-    onDetach: handleDetach
-}: EditButtonProps): JSX.Element {
-    const ref = useCallback(
-        (node: HTMLButtonElement | null) => {
-            if (!node) {
-                // oxlint-disable-next-line eslint/no-undefined unicorn/no-useless-undefined
-                return undefined;
-            }
-            handleAttach(name, node);
-            return () => {
-                handleDetach(name, node);
-            };
-        },
-        [handleAttach, handleDetach, name]
-    );
-    return (
-        <button
-            className="cursor-pointer rounded-xl border bg-(--foreground) px-4 py-2 text-(--background) transition-colors duration-200 hover:bg-(--hover-background) hover:text-(--foreground)"
-            ref={ref}
-            type="button"
-        >
-            編集
-        </button>
     );
 }
 
@@ -707,6 +692,117 @@ function NoSaveWarnModal({ openRef }: NoSaveWarnModalProps): JSX.Element {
                     保存せずに終了
                 </button>
             </div>
+        </Modal>
+    );
+}
+
+interface RenameModalProps {
+    openRefs: ReadonlyMap<string, HTMLButtonElement>;
+
+    onSyncName: (oldName: string, newName: string) => void;
+}
+
+function RenameModal({
+    onSyncName: handleSyncName,
+    openRefs
+}: RenameModalProps): JSX.Element {
+    const [newName, setNewName] = useState('');
+    const [oldName, setOldName] = useState('');
+    const { Modal, handleClose, handleOpen, open, ref } = useModal();
+    const handleRenameButtonClick = useCallback(
+        (name: string): EventListener =>
+            e => {
+                e.preventDefault();
+                setOldName(name);
+                setNewName(name);
+                handleOpen();
+            },
+        [handleOpen]
+    );
+    const handleNewNameChange = useCallback(
+        (e: ChangeEvent<HTMLInputElement>) => {
+            const checked = nameSchema.safeParse(e.currentTarget.value);
+            if (checked.success) {
+                setNewName(checked.data);
+            }
+        },
+        []
+    );
+    const handleRename = useCallback(
+        (e: SubmitEvent) => {
+            e.preventDefault();
+            const formData = renameFormSchema.safeParse(
+                Object.fromEntries(new FormData(e.target))
+            );
+            if (!formData.success) {
+                alert(
+                    formData.error.issues.map(issue => issue.message).join('\n')
+                );
+                return;
+            }
+            const { newName, oldName } = formData.data;
+            invoke('rename_data', { newName, oldName })
+                .then(() => {
+                    handleClose();
+                    e.target.reset();
+                    handleSyncName(oldName, newName);
+                })
+                .catch(alert);
+        },
+        [handleClose, handleSyncName]
+    );
+    useEffect(() => {
+        const buttonHandlers = new Map<string, EventListener>();
+        for (const [name, opener] of openRefs) {
+            buttonHandlers.set(name, handleRenameButtonClick(name));
+            opener.addEventListener('click', buttonHandlers.get(name)!);
+            opener.addEventListener('click', handleOpen);
+        }
+        return () => {
+            for (const [name, opener] of openRefs) {
+                opener.removeEventListener('click', buttonHandlers.get(name)!);
+                opener.removeEventListener('click', handleOpen);
+            }
+        };
+    }, [handleRenameButtonClick, handleOpen, openRefs]);
+    return (
+        <Modal
+            onClose={handleClose}
+            open={open}
+            ref={ref}
+        >
+            <form
+                className="my-4 flex flex-col items-center justify-center gap-8"
+                onSubmit={handleRename}
+            >
+                <div className="flex w-full flex-col items-center justify-center gap-4">
+                    <div className="flex w-full flex-col items-center justify-center gap-2">
+                        <label htmlFor="rename-name">エントリ名:</label>
+                        <div className="flex w-full flex-row items-center">
+                            <input
+                                className="w-0 flex-grow rounded-sm px-1"
+                                id="rename-name"
+                                name="newName"
+                                onChange={handleNewNameChange}
+                                required
+                                type="text"
+                                value={newName}
+                            />
+                        </div>
+                    </div>
+                </div>
+                <input
+                    name="oldName"
+                    type="hidden"
+                    value={oldName}
+                />
+                <button
+                    className="cursor-pointer rounded-4xl bg-(--foreground) px-12 py-3 text-(--background) transition-colors duration-200 hover:bg-(--hover-background) hover:text-(--hover-foreground)"
+                    type="submit"
+                >
+                    更新
+                </button>
+            </form>
         </Modal>
     );
 }

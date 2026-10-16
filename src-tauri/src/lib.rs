@@ -21,6 +21,7 @@ pub fn run() -> anyhow::Result<()> {
             cmd::get_data,
             cmd::load,
             cmd::remove_data,
+            cmd::rename_data,
             cmd::save,
             cmd::set_data
         ])
