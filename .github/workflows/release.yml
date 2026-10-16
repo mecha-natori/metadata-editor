@@ -152,15 +152,19 @@ jobs:
           d=${d//$'\n'/'%0A'}
           d=${d//$'\r'/'%0D'}
           echo "description=$d" >>"$GITHUB_OUTPUT"
+      - name: 'Create tag'
+        run: |
+          git tag "v${{ needs.build.outputs.version }}"
+          git push --tags origin
       - name: 'Create release'
         uses: 'svenstaro/upload-release-action@v2'
         with:
           body: '${{ steps.description.outputs.description }}'
           file: './out/*'
           file_glob: true
-          release_name: '基板IDチェンジャー v${{ needs.build.outputs.version }}'
+          release_name: '基板メタデータエディター v${{ needs.build.outputs.version }}'
           repo_token: '${{ secrets.GITHUB_TOKEN }}'
-          tag: '${{ needs.build.outputs.version }}'
+          tag: 'v${{ needs.build.outputs.version }}'
 name: 'Build and Release'
 on:
   workflow_dispatch:
