@@ -3,14 +3,14 @@
 set -euo pipefail
 BASE_DIR=$PWD
 tmpdir=$(mktemp -d)
-ctoml=$tmpdir/${INPUT_CARGOTOML:-src-tauri/Cargo.toml}
+ctoml=$tmpdir/${INPUT_CARGOTOML:-Cargo.toml}
 mpcfg=$tmpdir/${INPUT_MAKEPKGCONF:-makepkg.conf}
 pkgdir=$tmpdir/${INPUT_PKGDIR:-.}
 cp -r ./* "$tmpdir"
 chown -R builder "$tmpdir"
 cd "$tmpdir"
 sync_needed=false
-expected=$(yq .package.version "$ctoml")
+expected=$(yq .workspace.package.version "$ctoml")
 pkgbuild=$(
     grep pkgver= "$pkgdir/PKGBUILD" |
         sed 's/^pkgver=['\''"]\?\([^'\''"]\+\)['\''"]\?/\1/' |

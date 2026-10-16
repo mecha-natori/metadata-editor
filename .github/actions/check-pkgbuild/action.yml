@@ -1,7 +1,7 @@
 description: 'Generates .SRCINFO file'
 inputs:
   cargoToml:
-    default: 'src-tauri/Cargo.toml'
+    default: 'Cargo.toml'
     description: 'File path to Cargo.toml'
     required: false
   makepkgConf:

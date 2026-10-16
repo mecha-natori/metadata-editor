@@ -13,7 +13,7 @@ jobs:
         name: 'Check'
         uses: './.github/actions/check-pkgbuild'
         with:
-          cargoToml: 'src-tauri/Cargo.toml'
+          cargoToml: 'Cargo.toml'
           makepkgConf: 'src-tauri/bundle/archlinux/makepkg.conf'
           pkgdir: 'src-tauri/bundle/archlinux'
   sync:

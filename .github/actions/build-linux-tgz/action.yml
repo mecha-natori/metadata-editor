@@ -232,8 +232,8 @@ runs:
       name: 'Get version'
       uses: 'SebRollen/toml-action@v1.2.0'
       with:
-        field: 'package.version'
-        file: 'src-tauri/Cargo.toml'
+        field: 'workspace.package.version'
+        file: 'Cargo.toml'
     - env:
         GPG_PRIVATE_KEY_PASSPHRASE: '${{ inputs.gpg-private-key-passphrase }}'
         GPG_SIGN_KEY: '${{ inputs.gpg-sign-key }}'

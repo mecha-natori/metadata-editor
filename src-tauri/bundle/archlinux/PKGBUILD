@@ -39,7 +39,7 @@ b2sums=('SKIP')
 
 pkgver() {
     cd ./metadata-editor || return 1
-    yq '.package.version' ./src-tauri/Cargo.toml
+    yq '.workspace.package.version' ./Cargo.toml
 }
 
 prepare() {
