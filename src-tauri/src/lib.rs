@@ -1,3 +1,6 @@
+#![feature(integer_casts)]
+#![feature(read_le)]
+
 use probe_rs::MemoryInterface;
 use probe_rs::Session;
 use probe_rs::SessionConfig;
@@ -15,13 +18,16 @@ mod cmd;
 pub fn run() -> anyhow::Result<()> {
     env_logger::init();
     tauri::Builder::default()
+        .plugin(tauri_plugin_dialog::init())
         .invoke_handler(tauri::generate_handler![
             cmd::add_data,
+            cmd::dump,
             cmd::format,
             cmd::get_data,
             cmd::load,
             cmd::remove_data,
             cmd::rename_data,
+            cmd::restore,
             cmd::save,
             cmd::set_data
         ])

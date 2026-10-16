@@ -5,7 +5,7 @@ import { invoke } from '@tauri-apps/api/core';
 import { useCallback, useState } from 'react';
 import { Link } from 'react-router';
 import { z } from 'zod';
-import type { ChangeEvent, JSX, SubmitEvent } from 'react';
+import type { ChangeEvent, JSX, MouseEvent, SubmitEvent } from 'react';
 
 const formatFormSchema = z.object({
     board: z.string().transform(board => getBoard(board)!),
@@ -44,6 +44,36 @@ export function Home(): JSX.Element {
             setLength(Number.parseInt(e.currentTarget.value, 10));
         },
         []
+    );
+    const handleDump = useCallback(
+        (e: MouseEvent) => {
+            e.preventDefault();
+            const boardData = getBoard(board)!;
+            const bankBase = boardData.banks.at(-1)!.base;
+            const bankLength = boardData.banks.at(-1)!.length;
+            const chipFamily = boardData.chip.family;
+            const chipName = boardData.chip.name;
+            invoke('dump', { bankBase, bankLength, chipFamily, chipName })
+                .then(() => {
+                    alert('ファイル書き出しが完了しました。');
+                })
+                .catch(alert);
+        },
+        [board]
+    );
+    const handleRestore = useCallback(
+        (e: MouseEvent) => {
+            e.preventDefault();
+            const boardData = getBoard(board)!;
+            const chipFamily = boardData.chip.family;
+            const chipName = boardData.chip.name;
+            invoke('restore', { chipFamily, chipName })
+                .then(() => {
+                    alert('ファイルからの復元が完了しました。');
+                })
+                .catch(alert);
+        },
+        [board]
     );
     const handleFormat = useCallback(
         (e: SubmitEvent) => {
@@ -152,6 +182,20 @@ export function Home(): JSX.Element {
                             </button>
                         </Link>
                     )}
+                    <button
+                        className="cursor-pointer rounded-4xl border bg-(--foreground) px-8 py-3 text-lg text-(--background) transition-colors duration-200 hover:bg-(--hover-background) hover:text-(--foreground)"
+                        onClick={handleDump}
+                        type="button"
+                    >
+                        ファイル書き出し
+                    </button>
+                    <button
+                        className="cursor-pointer rounded-4xl border bg-(--foreground) px-8 py-3 text-lg text-(--background) transition-colors duration-200 hover:bg-(--hover-background) hover:text-(--foreground)"
+                        onClick={handleRestore}
+                        type="button"
+                    >
+                        ファイルからの復元
+                    </button>
                 </div>
             </div>
             <FormatModal
