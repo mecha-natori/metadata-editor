@@ -1,9 +1,9 @@
 allowBuilds:
   core-js-pure: true
 catalog:
-  oxfmt: '^0.66.0'
-  oxlint: '^1.81.0'
-  oxlint-tsgolint: '^7.0.2001'
+  oxfmt: '^0.72.0'
+  oxlint: '^1.87.0'
+  oxlint-tsgolint: '^7.0.2003'
 minimumReleaseAge: 10080
 overrides:
   '@jsr/ms0503__oxc-config>oxfmt': 'catalog:'
