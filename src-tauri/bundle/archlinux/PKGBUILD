@@ -4,7 +4,7 @@
 
 _pkgname='mechatronicslab-circuit-metadata-editor'
 pkgname="${_pkgname}-git"
-pkgver='0.1.0' # auto detect from src-tauri/Cargo.toml
+pkgver='1.0.0' # auto detect from src-tauri/Cargo.toml
 pkgrel=1
 pkgdesc='Edit metadata of circuit made by Mechatronics Lab'
 arch=('x86_64')
