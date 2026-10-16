@@ -23,7 +23,8 @@
 let
   inherit (myLib) filters;
   inherit (myLib.build) cleanSourcePipe;
-  cargoToml = ../src-tauri/Cargo.toml |> builtins.readFile |> builtins.fromTOML;
+  cargoPackage = ../src-tauri/Cargo.toml |> builtins.readFile |> builtins.fromTOML;
+  cargoWorkspace = ../Cargo.toml |> builtins.readFile |> builtins.fromTOML;
   pnpm' = pnpm.override {
     inherit nodejs-slim;
   };
@@ -38,12 +39,12 @@ let
   ];
 in
 rustPlatform.buildRustPackage (finalAttrs: {
-  inherit (cargoToml.package) version;
+  inherit (cargoWorkspace.workspace.package) version;
   RUSTFLAGS = lib.optionalString stdenv.buildPlatform.isLinux "-Clink-arg=-fuse-ld=mold";
   buildInputs = runtimeLibraries;
   cargoLock.lockFile = ../Cargo.lock;
   meta = {
-    inherit (cargoToml.package) description;
+    inherit (cargoPackage.package) description;
     downloadPage = "https://github.com/mecha-natori/metadata-editor/releases";
     homepage = "https://github.com/mecha-natori/metadata-editor/#readme";
     license = lib.licenses.mit;
@@ -61,7 +62,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
     wrapGAppsHook3
   ]
   ++ lib.optional stdenv.buildPlatform.isLinux mold;
-  pname = cargoToml.package.name;
+  pname = cargoPackage.package.name;
   pnpmDeps = fetchPnpmDeps {
     inherit (finalAttrs) patches pname src;
     fetcherVersion = 4;
