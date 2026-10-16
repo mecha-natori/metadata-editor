@@ -135,8 +135,8 @@
               inherit rustPlatform;
               myLib = ms0503-lib.lib;
               nodejs-slim = pkgs.nodejs-slim_26;
-              pnpm = pkgs.pnpm_11;
-              pnpmDepsHash = "sha256-8BsMVfCSDNf8SdP6dP5AETxECQ+00KLBthaTswJET/I=";
+              pnpm = pkgs.pnpm_12;
+              pnpmDepsHash = "sha256-n8jZJH6HScm5CnVAtXuGyLNOnADpDbcVuzaSH8d09Ts=";
             };
         };
       systems = import systems;
