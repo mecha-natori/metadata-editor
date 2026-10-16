@@ -162,7 +162,7 @@ jobs:
           body: '${{ steps.description.outputs.description }}'
           file: './out/*'
           file_glob: true
-          release_name: '基板メタデータエディター v${{ needs.build.outputs.version }}'
+          release_name: 'v${{ needs.build.outputs.version }}'
           repo_token: '${{ secrets.GITHUB_TOKEN }}'
           tag: 'v${{ needs.build.outputs.version }}'
 name: 'Build and Release'
