@@ -215,7 +215,7 @@ runs:
         sudo apt-get autoremove -y &>/dev/null || true
         sudo apt-get autoclean -y &>/dev/null || true
     - name: 'Install Nix'
-      uses: 'cachix/install-nix-action@v31'
+      uses: 'cachix/install-nix-action@v31.11.3'
       with:
         extra_nix_config: |
           accept-flake-config = true

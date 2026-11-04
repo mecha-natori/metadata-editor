@@ -5,10 +5,10 @@ jobs:
     runs-on: '${{ matrix.host }}'
     steps:
       - name: 'Checkout repository'
-        uses: 'actions/checkout@v6'
+        uses: 'actions/checkout@v7.0.1'
       - if: "matrix.os == 'linux-appimage'"
         name: 'Build'
-        uses: './.github/actions/build-linux-appimage'
+        uses: '$/.github/actions/build-linux-appimage'
         with:
           gpg-private-key: '${{ secrets.GPG_PRIVATE_KEY }}'
           gpg-private-key-passphrase: >-
@@ -16,7 +16,7 @@ jobs:
           gpg-sign-key: '${{ vars.GPG_SIGN_KEY }}'
       - if: "matrix.os == 'linux-archlinux'"
         name: 'Build'
-        uses: './.github/actions/build-linux-archlinux'
+        uses: '$/.github/actions/build-linux-archlinux'
         with:
           gpg_private_key: '${{ secrets.GPG_PRIVATE_KEY }}'
           gpg_private_key_passphrase: >-
@@ -25,7 +25,7 @@ jobs:
           gpg_sign_key_keygrip: '${{ vars.GPG_SIGN_KEY_KEYGRIP }}'
       - if: "matrix.os == 'linux-deb'"
         name: 'Build'
-        uses: './.github/actions/build-linux-deb'
+        uses: '$/.github/actions/build-linux-deb'
         with:
           gpg-private-key: '${{ secrets.GPG_PRIVATE_KEY }}'
           gpg-private-key-passphrase: >-
@@ -33,7 +33,7 @@ jobs:
           gpg-sign-key: '${{ vars.GPG_SIGN_KEY }}'
       - if: "matrix.os == 'linux-rpm'"
         name: 'Build'
-        uses: './.github/actions/build-linux-rpm'
+        uses: '$/.github/actions/build-linux-rpm'
         with:
           gpg-private-key: '${{ secrets.GPG_PRIVATE_KEY }}'
           gpg-private-key-passphrase: >-
@@ -41,7 +41,7 @@ jobs:
           gpg-sign-key: '${{ vars.GPG_SIGN_KEY }}'
       - if: "matrix.os == 'linux-tgz'"
         name: 'Build'
-        uses: './.github/actions/build-linux-tgz'
+        uses: '$/.github/actions/build-linux-tgz'
         with:
           gpg-private-key: '${{ secrets.GPG_PRIVATE_KEY }}'
           gpg-private-key-passphrase: >-
@@ -50,7 +50,7 @@ jobs:
           token: '${{ secrets.GITHUB_TOKEN }}'
       - if: "matrix.os == 'macos'"
         name: 'Build'
-        uses: './.github/actions/build-macos'
+        uses: '$/.github/actions/build-macos'
         with:
           gpg-private-key: '${{ secrets.GPG_PRIVATE_KEY }}'
           gpg-private-key-passphrase: >-
@@ -58,7 +58,7 @@ jobs:
           gpg-sign-key: '${{ vars.GPG_SIGN_KEY }}'
       - if: "matrix.os == 'windows'"
         name: 'Build'
-        uses: './.github/actions/build-windows'
+        uses: '$/.github/actions/build-windows'
         with:
           gpg-private-key: '${{ secrets.GPG_PRIVATE_KEY }}'
           gpg-private-key-passphrase: >-

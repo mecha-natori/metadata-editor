@@ -8,10 +8,10 @@ jobs:
     runs-on: 'ubuntu-24.04'
     steps:
       - name: 'Checkout repository'
-        uses: 'actions/checkout@v6'
+        uses: 'actions/checkout@v7.0.1'
       - id: 'check'
         name: 'Check'
-        uses: './.github/actions/check-pkgbuild'
+        uses: '$/.github/actions/check-pkgbuild'
         with:
           cargoToml: 'Cargo.toml'
           makepkgConf: 'src-tauri/bundle/archlinux/makepkg.conf'
@@ -24,7 +24,7 @@ jobs:
     runs-on: 'ubuntu-24.04'
     steps:
       - name: 'Checkout repository'
-        uses: 'actions/checkout@v6'
+        uses: 'actions/checkout@v7.0.1'
         with:
           fetch-depth: 0
       - name: 'Configure Git'
@@ -38,7 +38,7 @@ jobs:
           cd ./src-tauri/bundle/archlinux
           sed -i 's/^pkgver=[^ ]\+/pkgver='\'"$ver"\''/' PKGBUILD
       - name: 'Generate .SRCINFO'
-        uses: './.github/actions/generate-srcinfo'
+        uses: '$/.github/actions/generate-srcinfo'
         with:
           makepkgConf: 'src-tauri/bundle/archlinux/makepkg.conf'
           pkgdir: 'src-tauri/bundle/archlinux'

@@ -32,9 +32,9 @@ runs:
           <<<"$GPG_PRIVATE_KEY" \
           3<<<"$GPG_PRIVATE_KEY_PASSPHRASE"
     - name: 'Install pnpm'
-      uses: 'pnpm/action-setup@v6'
+      uses: 'pnpm/action-setup@v6.1.1'
     - name: 'Setup Node.js'
-      uses: 'actions/setup-node@v6'
+      uses: 'actions/setup-node@v7.1.0'
       with:
         cache: 'pnpm'
         node-version: 26
