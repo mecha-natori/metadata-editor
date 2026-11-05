@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import { load as loadToml } from 'js-toml';
+import { createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
@@ -20,6 +21,8 @@ const USER_AGENT = `AppleWebKit/537.36 Chrome/128.0.0.0 metadata-editor/${versio
 const CSS_URL =
     'https://fonts.googleapis.com/css2?family=Noto+Sans+Mono:wdth,wght@100,400&text=0123456789abcdef';
 const FONT_URL_PATTERN = /src: url\((.+)\) format\('woff2'\);/u;
+const FONT_FILE_MD5 = 'c6a9be4ea77d8a723cc49458c771c17e';
+const FONT_FILE_SIZE = 2876;
 
 async function main() {
     const css = await fetch(CSS_URL, {
@@ -35,6 +38,10 @@ async function main() {
     const font = await fetch(fontUrl)
         .then(async res => res.arrayBuffer())
         .then(buf => new Uint8Array(buf));
+    const hash = createHash('md5').update(font).digest('hex').toLowerCase();
+    if (hash !== FONT_FILE_MD5 || font.length !== FONT_FILE_SIZE) {
+        throw new Error('Hash or length mismatched');
+    }
     await mkdir(FONT_DIR, { recursive: true });
     await writeFile(FONT_FILE, font);
 }
