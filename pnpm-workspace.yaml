@@ -7,17 +7,19 @@ catalog:
 catalogs:
   minimatch11:
     minimatch: '^11.0.3'
+  ts6:
+    typescript: 'npm:@typescript/typescript6@^6.0.2'
 minimumReleaseAge: 10080
 overrides:
   '@eslint/config-array>minimatch': 'catalog:minimatch11'
   '@jsr/ms0503__oxc-config>oxfmt': 'catalog:'
   '@jsr/ms0503__oxc-config>oxlint': 'catalog:'
   '@jsr/ms0503__oxc-config>oxlint-tsgolint': 'catalog:'
-  '@typescript-eslint/project-service>typescript': 'npm:@typescript/typescript6@^6.0.2'
-  '@typescript-eslint/tsconfig-utils>typescript': 'npm:@typescript/typescript6@^6.0.2'
+  '@typescript-eslint/project-service>typescript': 'catalog:ts6'
+  '@typescript-eslint/tsconfig-utils>typescript': 'catalog:ts6'
   '@typescript-eslint/typescript-estree>minimatch': 'catalog:minimatch11'
-  '@typescript-eslint/typescript-estree>typescript': 'npm:@typescript/typescript6@^6.0.2'
-  '@typescript-eslint/utils>typescript': 'npm:@typescript/typescript6@^6.0.2'
+  '@typescript-eslint/typescript-estree>typescript': 'catalog:ts6'
+  '@typescript-eslint/utils>typescript': 'catalog:ts6'
   'eslint>minimatch': 'catalog:minimatch11'
   'glob>minimatch': 'catalog:minimatch11'
 peerDependencyRules:
