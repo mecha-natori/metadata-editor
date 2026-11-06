@@ -4,7 +4,12 @@
     (inputs.git-hooks.flakeModule or { })
   ];
   perSystem =
-    { config, lib, ... }:
+    {
+      config,
+      lib,
+      pkgs,
+      ...
+    }:
     lib.optionalAttrs (inputs.git-hooks ? flakeModule) {
       pre-commit = {
         check.enable = true;
@@ -24,6 +29,12 @@
               };
             };
             mdformat.enable = false; # treefmt
+            ms0503-check-deps-hash = {
+              enable = true;
+              entry =
+                builtins.readFile ./check-deps-hash.sh |> pkgs.writeScriptBin "check-deps-hash" |> lib.getExe;
+              files = "^(deps-hash\\.txt|pnpm-lock\\.yaml)";
+            };
             nil.enable = true;
             nixfmt.enable = false; # treefmt
             treefmt = {
