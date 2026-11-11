@@ -3,7 +3,7 @@ allowBuilds:
 catalog:
   oxfmt: '^0.72.0'
   oxlint: '^1.87.0'
-  oxlint-tsgolint: '^7.0.2003'
+  oxlint-tsgolint: '^7.0.2005'
 catalogs:
   minimatch11:
     minimatch: '^11.0.3'
