@@ -99,10 +99,14 @@
                 (config.treefmt.build.programs |> lib.attrValues)
                 libraries
                 (with pkgs; [
+                  (builtins.readFile ./nix/update-deps-hash.sh |> writeScriptBin "update-deps-hash")
                   (pnpm.override {
                     nodejs-slim = nodejs-slim_latest;
                   })
                   at-spi2-atk
+                  bash
+                  gawk
+                  gnugrep
                   nodejs-slim_latest
                   pango
                   pkg-config
