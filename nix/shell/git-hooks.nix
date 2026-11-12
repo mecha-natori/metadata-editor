@@ -1,8 +1,5 @@
 { inputs, ... }:
 {
-  imports = [
-    (inputs.git-hooks.flakeModule or { })
-  ];
   perSystem =
     {
       config,
@@ -44,7 +41,7 @@
             yamlfmt.enable = false; # treefmt
             yamllint.enable = false; # treefmt
           };
-          src = ../.;
+          src = ../../.;
         };
       };
     };

@@ -1,8 +1,5 @@
 { inputs, ... }:
 {
-  imports = [
-    (inputs.treefmt-nix.flakeModule or { })
-  ];
   perSystem =
     {
       inputs',
@@ -58,7 +55,7 @@
             jsonfmt = pkgs.callPackage ./jsonfmt.nix { };
           in
           {
-            command = "${jsonfmt}/bin/jf";
+            command = lib.getExe jsonfmt;
             options = lib.mkForce [ ];
             package = jsonfmt;
           };
