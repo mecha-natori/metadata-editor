@@ -4,7 +4,9 @@
     "identifier": "default",
     "permissions": [
         "core:default",
-        "dialog:default"
+        "dialog:default",
+        "process:allow-restart",
+        "updater:default"
     ],
     "windows": [
         "main"

@@ -1,9 +1,12 @@
-import { useModal } from './hooks/modal';
-import { useResult } from './hooks/result';
+import { useModal } from '@/hooks/modal';
+import { useResult } from '@/hooks/result';
+import { useUpdater } from '@/hooks/updater';
 import { getAllBoardNames, getBoard } from '@/lib/boards';
+import { bytesToString } from '@/lib/helper';
 import { invoke } from '@tauri-apps/api/core';
 import { useCallback, useState } from 'react';
 import { Link } from 'react-router';
+import { ToastContainer } from 'react-toastify';
 import { z } from 'zod';
 import type { ChangeEvent, JSX, MouseEvent, SubmitEvent } from 'react';
 
@@ -33,6 +36,7 @@ export function Home(): JSX.Element {
         open: formatModalOpen,
         ref: formatModalRef
     } = useModal();
+    const { UpdaterModal } = useUpdater();
     const handleBoardChange = useCallback(
         (e: ChangeEvent<HTMLSelectElement>) => {
             setBoard(e.currentTarget.value);
@@ -125,7 +129,7 @@ export function Home(): JSX.Element {
                 // oxlint-disable-next-line promise/prefer-await-to-callbacks
                 .catch((err: unknown) => {
                     // oxlint-disable-next-line typescript/consistent-type-assertions typescript/no-unsafe-type-assertion
-                    setError(err as string);
+                    setError(err);
                 });
         },
         [setError, setOk]
@@ -261,19 +265,8 @@ export function Home(): JSX.Element {
                     </button>
                 </form>
             </FormatModal>
+            <UpdaterModal />
+            <ToastContainer />
         </>
     );
-}
-
-function bytesToString(bytes: number): string {
-    if (2 ** 30 <= bytes) {
-        return `${bytes / 2 ** 30}GiB`;
-    }
-    if (2 ** 20 <= bytes) {
-        return `${bytes / 2 ** 20}MiB`;
-    }
-    if (2 ** 10 <= bytes) {
-        return `${bytes / 2 ** 10}KiB`;
-    }
-    return `${bytes}B`;
 }

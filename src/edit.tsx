@@ -1,8 +1,8 @@
-import { TrackedButton } from './components/tracked-button';
-import { useModal } from './hooks/modal';
-import { getBoard, testBoard } from './lib/boards';
-import { encodeSetDataValue } from './lib/encode';
-import { idFunc } from './lib/helper';
+import { TrackedButton } from '@/components/tracked-button';
+import { useModal } from '@/hooks/modal';
+import { getBoard, testBoard } from '@/lib/boards';
+import { encodeSetDataValue } from '@/lib/encode';
+import { idFunc } from '@/lib/helper';
 import { invoke } from '@tauri-apps/api/core';
 import {
     Suspense,

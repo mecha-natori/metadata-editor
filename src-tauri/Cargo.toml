@@ -2,18 +2,21 @@ cargo-features = ["profile-rustflags", "trim-paths"]
 
 [build-dependencies.tauri-build]
 features = []
-version = "2"
+version = "2.7.4"
 
 [dependencies]
-anyhow = "1"
-env_logger = "0.11"
-log = "0.4"
-probe-rs = "0.32"
+anyhow = "1.0.104"
+env_logger = "0.11.11"
+log = "0.4.35"
+probe-rs = "0.32.0"
+serde_json = "1.0.154"
 tauri-plugin-dialog = "~2.8.4"
+tauri-plugin-process = "~2.4.0"
+tauri-plugin-updater = "~2.14.1"
 
 [dependencies.serde]
 features = ["derive"]
-version = "1"
+version = "1.0.229"
 
 [dependencies.store]
 path = "../crates/store"
