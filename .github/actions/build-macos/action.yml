@@ -40,17 +40,33 @@ runs:
       shell: 'bash'
       run: |
         pnpm tauri build -b dmg -t universal-apple-darwin
-        dir=$PWD/target/universal-apple-darwin/release/bundle/dmg
+        dmg_dir=$PWD/target/universal-apple-darwin/release/bundle/dmg
+        updater_dir=$PWD/target/universal-apple-darwin/release/bundle/macos
         name="${{ steps.product-name.outputs.value }}"
         ver="${{ steps.version.outputs.value }}"
-        fullname=${name}_${ver}_universal
-        if [[ ! -f $dir/$fullname.dmg ]]; then
-          file=$(find "$dir" -type f -name '*.dmg')
+        dmg_name=${name}_${ver}_universal
+        if [[ ! -f $dmg_dir/$dmg_name.dmg ]]; then
+          file=$(find "$dmg_dir" -type f -name '*.dmg')
           printf "\e[1;31mError: installer file name is wrong\e[m\n"
-          printf "  expected: \e[33m%s/%s.dmg\e[m\n" "$dir" "$fullname"
+          printf "  expected: \e[33m%s/%s.dmg\e[m\n" "$dmg_dir" "$dmg_name"
+          printf "  found: \e[33m%s\e[m\n" "$file"
+          exit 1
+        fi
+        if [[ ! -f $updater_dir/$name.app.tar.gz ]]; then
+          file=$(find "$updater_dir" -type f -name '*.app.tar.gz')
+          printf "\e[1;31mError: updater file name is wrong\e[m\n"
+          printf "  expected: \e[33m%s/%s.app.tar.gz\e[m\n" \
+            "$updater_dir" \
+            "$name"
           printf "  found: \e[33m%s\e[m\n" "$file"
           exit 1
         fi
         mkdir out
-        mv "$dir/$fullname.dmg" "$GITHUB_WORKSPACE/out/$fullname.dmg"
+        mv "$dmg_dir/$dmg_name.dmg" "$GITHUB_WORKSPACE/out/$dmg_name.dmg"
+        mv \
+          "$updater_dir/$name.app.tar.gz" \
+          "$GITHUB_WORKSPACE/out/$name.app.tar.gz"
+        mv \
+          "$updater_dir/$name.app.tar.gz.sig" \
+          "$GITHUB_WORKSPACE/out/$name.app.tar.gz.sig"
   using: 'composite'

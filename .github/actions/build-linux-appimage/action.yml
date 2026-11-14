@@ -95,4 +95,7 @@ runs:
         fi
         mkdir out
         mv "$dir/$fullname.AppImage" "$GITHUB_WORKSPACE/out/$fullname.AppImage"
+        mv \
+          "$dir/$fullname.AppImage.sig" \
+          "$GITHUB_WORKSPACE/out/$fullname.AppImage.sig"
   using: 'composite'

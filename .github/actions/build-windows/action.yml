@@ -53,4 +53,5 @@ runs:
         fi
         mkdir out
         mv "$dir/$fullname.msi" "$GITHUB_WORKSPACE/out/$fullname.msi"
+        mv "$dir/$fullname.msi.sig" "$GITHUB_WORKSPACE/out/$fullname.msi.sig"
   using: 'composite'
