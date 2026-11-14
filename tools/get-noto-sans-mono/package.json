@@ -1,6 +1,6 @@
 {
     "dependencies": {
-        "js-toml": "^2.0.1"
+        "js-toml": "catalog:"
     },
     "devDependencies": {
         "@ms0503/oxc-config": "catalog:",

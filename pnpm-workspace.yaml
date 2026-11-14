@@ -5,6 +5,7 @@ catalog:
   '@types/node': '^26.6.6'
   eslint-plugin-perfectionist: '^5.13.0'
   globals: '^17.14.0'
+  js-toml: '^2.0.1'
   oxfmt: '^0.76.0'
   oxlint: '^1.91.0'
   oxlint-tsgolint: '^7.0.2006'
@@ -29,6 +30,7 @@ overrides:
   'eslint>minimatch': 'catalog:minimatch11'
   'glob>minimatch': 'catalog:minimatch11'
 packages:
+  - 'tools/generate-update-json'
   - 'tools/get-noto-sans-mono'
 peerDependencyRules:
   allowedVersions:

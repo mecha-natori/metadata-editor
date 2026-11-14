@@ -139,6 +139,21 @@ jobs:
           merge-multiple: true
           path: './out'
           pattern: 'metadata-editor-*'
+      - name: 'Install pnpm'
+        uses: 'pnpm/action-setup@v6.1.1'
+      - name: 'Setup Node.js'
+        uses: 'actions/setup-node@v7.1.0'
+        with:
+          cache: 'pnpm'
+          node-version: 26
+      - name: 'Install dependencies'
+        run: |
+          pnpm \
+            ci \
+            --filter @mecha-natori/metadata-editor-generate-update-json \
+            -P
+      - name: 'Generate update manifest'
+        run: 'node ./tools/generate-update-json/main.ts'
       - name: 'Configure Git'
         run: |
           git config user.email \
