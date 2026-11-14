@@ -1,14 +1,4 @@
 description: 'Builds the metadata-editor project for Debian GNU/Linux family'
-inputs:
-  gpg-private-key:
-    description: 'GPG private key for signing'
-    required: true
-  gpg-private-key-passphrase:
-    description: 'Passphrase of GPG private key for signing'
-    required: true
-  gpg-sign-key:
-    description: 'GPG key id for signing'
-    required: true
 name: 'Build for Debian GNU/Linux family'
 outputs:
   version:
@@ -16,21 +6,6 @@ outputs:
     value: '${{ steps.version.outputs.value }}'
 runs:
   steps:
-    - env:
-        GPG_PRIVATE_KEY: '${{ inputs.gpg-private-key }}'
-        GPG_PRIVATE_KEY_PASSPHRASE: '${{ inputs.gpg-private-key-passphrase }}'
-      name: 'Import GPG key'
-      shell: 'bash'
-      run: |
-        gpg \
-          --batch \
-          --import \
-          --no-tty \
-          --passphrase-fd 3 \
-          --pinentry-mode loopback \
-          --yes \
-          <<<"$GPG_PRIVATE_KEY" \
-          3<<<"$GPG_PRIVATE_KEY_PASSPHRASE"
     - name: 'Install Tauri dependencies'
       shell: 'bash'
       run: |
@@ -71,8 +46,6 @@ runs:
         field: 'workspace.package.version'
         file: 'Cargo.toml'
     - env:
-        GPG_PRIVATE_KEY_PASSPHRASE: '${{ inputs.gpg-private-key-passphrase }}'
-        GPG_SIGN_KEY: '${{ inputs.gpg-sign-key }}'
         RUSTFLAGS: '-Clink-arg=-fuse-ld=mold'
       id: 'build'
       name: 'Build'
@@ -92,15 +65,4 @@ runs:
         fi
         mkdir out
         mv "$dir/$fullname.deb" "$GITHUB_WORKSPACE/out/$fullname.deb"
-        gpg \
-          --batch \
-          --detach-sign \
-          --local-user "$GPG_SIGN_KEY" \
-          --no-tty \
-          --output "$GITHUB_WORKSPACE/out/$fullname.deb.sig" \
-          --passphrase-fd 0 \
-          --pinentry-mode loopback \
-          --yes \
-          "$GITHUB_WORKSPACE/out/$fullname.deb" \
-          <<<"$GPG_PRIVATE_KEY_PASSPHRASE"
   using: 'composite'

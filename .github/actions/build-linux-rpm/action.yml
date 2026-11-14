@@ -31,7 +31,7 @@ runs:
           --yes \
           <<<"$GPG_PRIVATE_KEY" \
           3<<<"$GPG_PRIVATE_KEY_PASSPHRASE"
-    - name: 'Install Tauri dependencies'
+    - name: 'Install Tauri dependencies and tools'
       shell: 'bash'
       run: |
         sudo apt-get update
@@ -40,7 +40,29 @@ runs:
           libgtk-3-dev \
           librsvg2-dev \
           libwebkit2gtk-4.1-dev \
-          mold
+          mold \
+          rpm
+    - env:
+        GPG_SIGN_KEY: '${{ inputs.gpg-sign-key }}'
+      name: 'Setup rpmsign'
+      shell: 'bash'
+      run: |
+        touch ~/.rpmmacros
+        printf "%%_signature gpg\n" >>~/.rpmmacros
+        printf "%%_gpg_name %s\n" "$GPG_SIGN_KEY" >>~/.rpmmacros
+        printf "%%__gpg_sign_cmd %%{__gpg} gpg" >>~/.rpmmacros
+        printf " --batch" >>~/.rpmmacros
+        printf " --detach-sign" >>~/.rpmmacros
+        printf " --force-v3-sigs" >>~/.rpmmacros
+        printf " --local-user \"%%{_gpg_name}\"" >>~/.rpmmacros
+        printf " --no-armor" >>~/.rpmmacros
+        printf " --no-secmem-warning" >>~/.rpmmacros
+        printf " --no-tty" >>~/.rpmmacros
+        printf " --output \"%%{__signature_filename}\"" >>~/.rpmmacros
+        printf " --passphrase-file /tmp/gpg_passphrase" >>~/.rpmmacros
+        printf " --pinentry-mode loopback" >>~/.rpmmacros
+        printf " --yes" >>~/.rpmmacros
+        printf " \"%%{__plaintext_filename}\"\n" >>~/.rpmmacros
     - name: 'Install pnpm'
       uses: 'pnpm/action-setup@v6.1.1'
     - name: 'Setup Node.js'
@@ -92,15 +114,9 @@ runs:
         fi
         mkdir out
         mv "$dir/$fullname.rpm" "$GITHUB_WORKSPACE/out/$fullname.rpm"
-        gpg \
-          --batch \
-          --detach-sign \
-          --local-user "$GPG_SIGN_KEY" \
-          --no-tty \
-          --output "$GITHUB_WORKSPACE/out/$fullname.rpm.sig" \
-          --passphrase-fd 0 \
-          --pinentry-mode loopback \
-          --yes \
-          "$GITHUB_WORKSPACE/out/$fullname.rpm" \
-          <<<"$GPG_PRIVATE_KEY_PASSPHRASE"
+        touch /tmp/gpg_passphrase
+        chmod 0600 /tmp/gpg_passphrase
+        printf "%s" "$GPG_PRIVATE_KEY_PASSPHRASE" /tmp/gpg_passphrase
+        rpmsign --addsign "$GITHUB_WORKSPACE/out/$fullname.rpm"
+        rm -f /tmp/gpg_passphrase
   using: 'composite'

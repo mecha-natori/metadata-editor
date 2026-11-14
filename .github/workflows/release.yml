@@ -50,11 +50,6 @@ jobs:
         if: "matrix.os == 'linux-deb'"
         name: 'Build'
         uses: '$/.github/actions/build-linux-deb'
-        with:
-          gpg-private-key: '${{ secrets.GPG_PRIVATE_KEY }}'
-          gpg-private-key-passphrase: >-
-            ${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
-          gpg-sign-key: '${{ vars.GPG_SIGN_KEY }}'
       - id: 'build-linux-rpm'
         if: "matrix.os == 'linux-rpm'"
         name: 'Build'
@@ -78,20 +73,10 @@ jobs:
         if: "matrix.os == 'macos'"
         name: 'Build'
         uses: '$/.github/actions/build-macos'
-        with:
-          gpg-private-key: '${{ secrets.GPG_PRIVATE_KEY }}'
-          gpg-private-key-passphrase: >-
-            ${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
-          gpg-sign-key: '${{ vars.GPG_SIGN_KEY }}'
       - id: 'build-windows'
         if: "matrix.os == 'windows'"
         name: 'Build'
         uses: '$/.github/actions/build-windows'
-        with:
-          gpg-private-key: '${{ secrets.GPG_PRIVATE_KEY }}'
-          gpg-private-key-passphrase: >-
-            ${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
-          gpg-sign-key: '${{ vars.GPG_SIGN_KEY }}'
       - name: 'Upload artifact'
         uses: 'actions/upload-artifact@v7.0.2'
         with:
