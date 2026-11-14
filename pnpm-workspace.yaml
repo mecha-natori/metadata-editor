@@ -1,14 +1,20 @@
 allowBuilds:
   core-js-pure: true
 catalog:
+  '@ms0503/oxc-config': 'jsr:^0.6.5'
+  '@types/node': '^26.6.6'
+  eslint-plugin-perfectionist: '^5.13.0'
+  globals: '^17.14.0'
   oxfmt: '^0.76.0'
   oxlint: '^1.91.0'
   oxlint-tsgolint: '^7.0.2006'
+  typescript: '^7.1.0-beta'
 catalogs:
   minimatch11:
     minimatch: '^11.0.4'
   ts6:
     typescript: 'npm:@typescript/typescript6@^6.0.2'
+includeWorkspaceRoot: true
 minimumReleaseAge: 10080
 overrides:
   '@eslint/config-array>minimatch': 'catalog:minimatch11'
@@ -22,6 +28,8 @@ overrides:
   '@typescript-eslint/utils>typescript': 'catalog:ts6'
   'eslint>minimatch': 'catalog:minimatch11'
   'glob>minimatch': 'catalog:minimatch11'
+packages:
+  - 'tools/get-noto-sans-mono'
 peerDependencyRules:
   allowedVersions:
     typescript: '7'

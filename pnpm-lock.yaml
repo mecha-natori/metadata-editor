@@ -164,6 +164,18 @@ settings:
 
 catalogs:
   default:
+    '@ms0503/oxc-config':
+      specifier: jsr:^0.6.5
+      version: 0.6.5
+    '@types/node':
+      specifier: ^26.6.6
+      version: 26.6.6
+    eslint-plugin-perfectionist:
+      specifier: ^5.13.0
+      version: 5.13.0
+    globals:
+      specifier: ^17.14.0
+      version: 17.14.0
     oxfmt:
       specifier: ^0.76.0
       version: 0.76.0
@@ -173,6 +185,9 @@ catalogs:
     oxlint-tsgolint:
       specifier: ^7.0.2006
       version: 7.0.2006
+    typescript:
+      specifier: ^7.1.0-beta
+      version: 7.1.0-dev.20261107.1
 
 overrides:
   '@eslint/config-array>minimatch': ^11.0.4
@@ -220,7 +235,7 @@ importers:
         version: '@jsr/zod__zod@4.6.7'
     devDependencies:
       '@ms0503/oxc-config':
-        specifier: jsr:^0.6.5
+        specifier: 'catalog:'
         version: '@jsr/ms0503__oxc-config@0.6.5(oxlint-tsgolint@7.0.2006)'
       '@tailwindcss/language-server':
         specifier: ^0.16.0
@@ -232,7 +247,7 @@ importers:
         specifier: ^2.12.4
         version: 2.12.4
       '@types/node':
-        specifier: ^26.6.6
+        specifier: 'catalog:'
         version: 26.6.6
       '@types/react':
         specifier: ^19.3.0
@@ -244,14 +259,11 @@ importers:
         specifier: ^6.2.1
         version: 6.2.1(vite@8.3.6(@types/node@26.6.6)(jiti@2.7.0))
       eslint-plugin-perfectionist:
-        specifier: ^5.13.0
+        specifier: 'catalog:'
         version: 5.13.0(eslint@10.14.0(jiti@2.7.0)(supports-color@5.5.0))(supports-color@5.5.0)(typescript@7.1.0-dev.20261107.1)
       globals:
-        specifier: ^17.14.0
+        specifier: 'catalog:'
         version: 17.14.0
-      js-toml:
-        specifier: ^2.0.1
-        version: 2.0.1
       lightningcss:
         specifier: ^1.33.0
         version: 1.33.0
@@ -286,11 +298,42 @@ importers:
         specifier: ^4.3.4
         version: 4.3.4
       typescript:
-        specifier: ^7.1.0-beta
+        specifier: 'catalog:'
         version: 7.1.0-dev.20261107.1
       vite:
         specifier: ^8.3.6
         version: 8.3.6(@types/node@26.6.6)(jiti@2.7.0)
+
+  tools/get-noto-sans-mono:
+    dependencies:
+      js-toml:
+        specifier: ^2.0.1
+        version: 2.0.1
+    devDependencies:
+      '@ms0503/oxc-config':
+        specifier: 'catalog:'
+        version: '@jsr/ms0503__oxc-config@0.6.5(oxlint-tsgolint@7.0.2006)'
+      '@types/node':
+        specifier: 'catalog:'
+        version: 26.6.6
+      eslint-plugin-perfectionist:
+        specifier: 'catalog:'
+        version: 5.13.0(eslint@10.14.0(jiti@2.7.0)(supports-color@5.5.0))(supports-color@5.5.0)(typescript@7.1.0-dev.20261107.1)
+      globals:
+        specifier: 'catalog:'
+        version: 17.14.0
+      oxfmt:
+        specifier: 'catalog:'
+        version: 0.76.0
+      oxlint:
+        specifier: 'catalog:'
+        version: 1.91.0(oxlint-tsgolint@7.0.2006)
+      oxlint-tsgolint:
+        specifier: 'catalog:'
+        version: 7.0.2006
+      typescript:
+        specifier: 'catalog:'
+        version: 7.1.0-dev.20261107.1
 
 packages:
 
