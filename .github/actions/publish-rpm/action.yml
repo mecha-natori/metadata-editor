@@ -1,0 +1,56 @@
+description: 'Publishes the metadata-editor package for RedHat Enterprise Linux family to repository'
+inputs:
+  file:
+    description: 'Path to file to publish'
+    required: true
+  gpg-public-key:
+    description: 'GPG public key for signing'
+    required: true
+  website-repo:
+    description: 'Path to cloned website repository'
+    required: true
+name: 'Publish for RedHat Enterprise Linux family to repository'
+runs:
+  steps:
+    - name: 'Install tools'
+      shell: 'bash'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y --no-install-recommends --no-install-suggests \
+          createrepo-c \
+          rpm
+    - env:
+        GPG_PRIVATE_KEY: '${{ inputs.gpg-private-key }}'
+        GPG_PRIVATE_KEY_PASSPHRASE: '${{ inputs.gpg-private-key-passphrase }}'
+        GPG_PUBLIC_KEY: '${{ inputs.gpg-public-key }}'
+      name: 'Import GPG key'
+      shell: 'bash'
+      run: |
+        gpg \
+          --batch \
+          --keyserver keyserver.ubuntu.com \
+          --no-tty \
+          --recv-keys "$GPG_PUBLIC_KEY" \
+          --yes
+    - env:
+        FILE: '${{ inputs.file }}'
+        GPG_PRIVATE_KEY_PASSPHRASE: '${{ inputs.gpg-private-key-passphrase }}'
+        GPG_PUBLIC_KEY: '${{ inputs.gpg-public-key }}'
+        GPG_SIGN_KEY: '${{ inputs.gpg-sign-key }}'
+        WEBSITE_REPO: '${{ inputs.website-repo }}'
+      name: 'Update repository'
+      shell: 'bash'
+      run: |
+        cd "$GITHUB_WORKSPACE/$WEBSITE_REPO/src"
+        mkdir -p repo/rpm
+        cd repo/rpm
+        cp "$GITHUB_WORKSPACE/$FILE" ./
+        gpg \
+          --armor \
+          --batch \
+          --export "$GPG_PUBLIC_KEY" \
+          --no-tty \
+          --output RPM-GPG-KEY \
+          --yes
+        createrepo_c ./
+  using: 'composite'

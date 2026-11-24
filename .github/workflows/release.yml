@@ -118,6 +118,12 @@ jobs:
         uses: 'actions/checkout@v7.0.1'
         with:
           fetch-depth: 0
+      - name: 'Checkout website repository'
+        uses: 'actions/checkout@v7.0.1'
+        with:
+          path: 'site'
+          repository: 'mecha-natori/mecha-natori.github.io'
+          token: '${{ secrets.MECHA_NATORI_WEBSITE_TOKEN }}'
       - name: 'Get artifacts'
         uses: 'actions/download-artifact@v8.0.2'
         with:
@@ -165,6 +171,28 @@ jobs:
           release_name: 'v${{ needs.build.outputs.version }}'
           repo_token: '${{ secrets.GITHUB_TOKEN }}'
           tag: 'v${{ needs.build.outputs.version }}'
+      - name: 'Update debian repository'
+        uses: '$/.github/actions/publish-deb'
+        with:
+          file: "\
+              ./out/mechatronicslab-circuit-metadata-editor_\
+              ${{ needs.build.outputs.version }}_amd64.deb\
+            "
+          gpg-private-key: '${{ secrets.GPG_PRIVATE_KEY }}'
+          gpg-private-key-passphrase: >-
+            ${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
+          gpg-public-key: '${{ vars.GPG_PUBLIC_KEY }}'
+          gpg-sign-key: '${{ vars.GPG_SIGN_KEY }}'
+          website-repo: 'site'
+      - name: 'Update rpm repository'
+        uses: '$/.github/actions/publish-rpm'
+        with:
+          file: "\
+              ./out/mechatronicslab-circuit-metadata-editor-\
+              ${{ needs.build.outputs.version }}-1.x86_64.rpm\
+            "
+          gpg-public-key: '${{ vars.GPG_PUBLIC_KEY }}'
+          website-repo: 'site'
 name: 'Build and Release'
 on:
   workflow_dispatch:
