@@ -36,6 +36,7 @@ jobs:
           gpg-private-key-passphrase: >-
             ${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
           gpg-sign-key: '${{ vars.GPG_SIGN_KEY }}'
+          tauri-private-key: '${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}'
       - id: 'build-linux-archlinux'
         if: "matrix.os == 'linux-archlinux'"
         name: 'Build'
@@ -73,10 +74,14 @@ jobs:
         if: "matrix.os == 'macos'"
         name: 'Build'
         uses: '$/.github/actions/build-macos'
+        with:
+          tauri-private-key: '${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}'
       - id: 'build-windows'
         if: "matrix.os == 'windows'"
         name: 'Build'
         uses: '$/.github/actions/build-windows'
+        with:
+          tauri-private-key: '${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}'
       - name: 'Upload artifact'
         uses: 'actions/upload-artifact@v7.0.2'
         with:
@@ -175,8 +180,8 @@ jobs:
         uses: '$/.github/actions/publish-deb'
         with:
           file: "\
-              ./out/mechatronicslab-circuit-metadata-editor_\
-              ${{ needs.build.outputs.version }}_amd64.deb\
+            ./out/mechatronicslab-circuit-metadata-editor_\
+            ${{ needs.build.outputs.version }}_amd64.deb\
             "
           gpg-private-key: '${{ secrets.GPG_PRIVATE_KEY }}'
           gpg-private-key-passphrase: >-
@@ -188,8 +193,8 @@ jobs:
         uses: '$/.github/actions/publish-rpm'
         with:
           file: "\
-              ./out/mechatronicslab-circuit-metadata-editor-\
-              ${{ needs.build.outputs.version }}-1.x86_64.rpm\
+            ./out/mechatronicslab-circuit-metadata-editor-\
+            ${{ needs.build.outputs.version }}-1.x86_64.rpm\
             "
           gpg-public-key: '${{ vars.GPG_PUBLIC_KEY }}'
           website-repo: 'site'

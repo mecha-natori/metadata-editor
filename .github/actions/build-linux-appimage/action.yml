@@ -9,6 +9,9 @@ inputs:
   gpg-sign-key:
     description: 'GPG key id for signing'
     required: true
+  tauri-private-key:
+    description: 'Tauri private key for signing'
+    required: true
 name: 'Build for Linux AppImage'
 outputs:
   version:
@@ -77,6 +80,7 @@ runs:
         RUSTFLAGS: '-Clink-arg=-fuse-ld=mold'
         SIGN: '1'
         SIGN_KEY: '${{ inputs.gpg-sign-key }}'
+        TAURI_SIGNING_PRIVATE_KEY: '${{ inputs.tauri-private-key }}'
       id: 'build'
       name: 'Build'
       shell: 'bash'

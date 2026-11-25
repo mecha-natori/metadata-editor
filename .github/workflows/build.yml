@@ -14,6 +14,7 @@ jobs:
           gpg-private-key-passphrase: >-
             ${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
           gpg-sign-key: '${{ vars.GPG_SIGN_KEY }}'
+          tauri-private-key: '${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}'
       - if: "matrix.os == 'linux-archlinux'"
         name: 'Build'
         uses: '$/.github/actions/build-linux-archlinux'
@@ -46,9 +47,13 @@ jobs:
       - if: "matrix.os == 'macos'"
         name: 'Build'
         uses: '$/.github/actions/build-macos'
+        with:
+          tauri-private-key: '${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}'
       - if: "matrix.os == 'windows'"
         name: 'Build'
         uses: '$/.github/actions/build-windows'
+        with:
+          tauri-private-key: '${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}'
     strategy:
       fail-fast: false
       matrix:

@@ -1,4 +1,8 @@
 description: 'Builds the metadata-editor project for macOS (Universal)'
+inputs:
+  tauri-private-key:
+    description: 'Tauri private key for signing'
+    required: true
 name: 'Build for macOS'
 outputs:
   version:
@@ -35,7 +39,9 @@ runs:
       with:
         field: 'workspace.package.version'
         file: 'Cargo.toml'
-    - id: 'build'
+    - env:
+        TAURI_SIGNING_PRIVATE_KEY: '${{ inputs.tauri-private-key }}'
+      id: 'build'
       name: 'Build'
       shell: 'bash'
       run: |
