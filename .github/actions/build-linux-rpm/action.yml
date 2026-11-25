@@ -116,7 +116,7 @@ runs:
         mv "$dir/$fullname.rpm" "$GITHUB_WORKSPACE/out/$fullname.rpm"
         touch /tmp/gpg_passphrase
         chmod 0600 /tmp/gpg_passphrase
-        printf "%s" "$GPG_PRIVATE_KEY_PASSPHRASE" /tmp/gpg_passphrase
+        printf "%s" "$GPG_PRIVATE_KEY_PASSPHRASE" >/tmp/gpg_passphrase
         rpmsign --addsign "$GITHUB_WORKSPACE/out/$fullname.rpm"
         rm -f /tmp/gpg_passphrase
   using: 'composite'
