@@ -50,7 +50,7 @@ dependencies:
         repo_id: 212301524
     'dtolnay/rust-toolchain@nightly':
         ref: 'nightly'
-        commit: 'sha1-2c76c034f9e32a5d6e2c104dc4df23a22476db04'
+        commit: 'sha1-6a52aad76a94a5fbc50d567bb5be24419801c1fb'
         owner_id: 1940490
         repo_id: 260749683
     'pnpm/action-setup@v6.1.1':
