@@ -4,7 +4,7 @@ import { load as loadToml } from 'js-toml';
 import { open, opendir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
-const BASE_DIR = join(import.meta.dirname, '..');
+const BASE_DIR = join(import.meta.dirname, '../..');
 const OUT_DIR = join(BASE_DIR, 'out');
 const OUT_FILE = join(OUT_DIR, 'update.json');
 

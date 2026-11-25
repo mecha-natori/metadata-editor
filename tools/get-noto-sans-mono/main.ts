@@ -5,7 +5,7 @@ import { createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
-const BASE_DIR = join(import.meta.dirname, '..');
+const BASE_DIR = join(import.meta.dirname, '../..');
 const CARGO_TOML_FILE = join(BASE_DIR, 'Cargo.toml');
 const FONT_DIR = join(BASE_DIR, 'public/fonts');
 const FONT_FILE = join(FONT_DIR, 'NotoSansMono.woff2');
