@@ -51,7 +51,7 @@ runs:
       name: 'Build'
       shell: 'bash'
       run: |
-        pnpm tauri build -b deb
+        pnpm tauri build -b deb --no-sign
         dir=$PWD/target/release/bundle/deb
         name="${{ steps.product-name.outputs.value }}"
         ver="${{ steps.version.outputs.value }}"

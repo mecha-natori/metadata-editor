@@ -100,7 +100,7 @@ runs:
       name: 'Build'
       shell: 'bash'
       run: |
-        pnpm tauri build -b rpm
+        pnpm tauri build -b rpm --no-sign
         dir=$PWD/target/release/bundle/rpm
         name="${{ steps.product-name.outputs.value }}"
         ver="${{ steps.version.outputs.value }}"

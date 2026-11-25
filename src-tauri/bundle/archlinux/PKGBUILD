@@ -50,7 +50,7 @@ prepare() {
 
 build() {
     cd ./metadata-editor || return 1
-    pnpm tauri build -b deb
+    pnpm tauri build -b deb --no-sign
 }
 
 package() {

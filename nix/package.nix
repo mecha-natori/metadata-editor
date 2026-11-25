@@ -81,4 +81,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
     filters.isNotNixDirectory
     filters.isNotNixFiles
   ];
+  tauriBuildFlags = [
+    "--no-sign"
+  ];
 })
