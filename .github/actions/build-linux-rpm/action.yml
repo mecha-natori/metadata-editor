@@ -50,19 +50,12 @@ runs:
         touch ~/.rpmmacros
         printf "%%_signature gpg\n" >>~/.rpmmacros
         printf "%%_gpg_name %s\n" "$GPG_SIGN_KEY" >>~/.rpmmacros
-        printf "%%__gpg_sign_cmd %%{__gpg} gpg" >>~/.rpmmacros
+        printf "%%_gpg_sign_cmd_extra_args" >>~/.rpmmacros
         printf " --batch" >>~/.rpmmacros
-        printf " --detach-sign" >>~/.rpmmacros
-        printf " --force-v3-sigs" >>~/.rpmmacros
-        printf " --local-user \"%%{_gpg_name}\"" >>~/.rpmmacros
-        printf " --no-armor" >>~/.rpmmacros
-        printf " --no-secmem-warning" >>~/.rpmmacros
         printf " --no-tty" >>~/.rpmmacros
-        printf " --output \"%%{__signature_filename}\"" >>~/.rpmmacros
         printf " --passphrase-file /tmp/gpg_passphrase" >>~/.rpmmacros
         printf " --pinentry-mode loopback" >>~/.rpmmacros
-        printf " --yes" >>~/.rpmmacros
-        printf " \"%%{__plaintext_filename}\"\n" >>~/.rpmmacros
+        printf " --yes\n" >>~/.rpmmacros
     - name: 'Install pnpm'
       uses: 'pnpm/action-setup@v6.1.1'
     - name: 'Setup Node.js'
