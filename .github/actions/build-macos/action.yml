@@ -49,7 +49,7 @@ runs:
       name: 'Build'
       shell: 'bash'
       run: |
-        pnpm tauri build -b dmg -t universal-apple-darwin
+        pnpm tauri build -b app,dmg -t universal-apple-darwin
         dmg_dir=$PWD/target/universal-apple-darwin/release/bundle/dmg
         updater_dir=$PWD/target/universal-apple-darwin/release/bundle/macos
         name="${{ steps.product-name.outputs.value }}"
