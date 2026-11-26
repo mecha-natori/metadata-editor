@@ -1,0 +1,272 @@
+jobs:
+  check-for-run:
+    outputs:
+      should-run: '${{ steps.check.outputs.should-run }}'
+    runs-on: 'ubuntu-24.04'
+    steps:
+      - env:
+          COMMIT_HASH: >-
+            ${{
+              github.event_name == 'pull_request'
+              && github.event.pull_request.head.sha
+              || github.sha
+            }}
+        id: 'check'
+        name: 'Check'
+        run: |
+          should_run=false
+          msg=$(git log --format=%B --max-count=1 "$COMMIT_HASH")
+          if grep '^chore(deps\(-dev\)\?): bump' <<<"$msg" &>/dev/null; then
+            should_run=true
+          fi
+          echo "should-run=$should_run" >>"$GITHUB_OUTPUT"
+  check-for-update:
+    if: 'fromJSON(needs.check-for-run.outputs.should-run)'
+    needs: 'check-for-run'
+    outputs:
+      update-needed: '${{ steps.check.outputs.update-needed }}'
+    permissions:
+      contents: 'read'
+    runs-on: 'ubuntu-24.04'
+    steps:
+      - name: 'Checkout repository'
+        uses: 'actions/checkout@v7.0.1'
+        with:
+          ref: &checkout-ref >-
+            ${{
+              github.event_name == 'pull_request'
+              && github.event.pull_request.head.ref
+              || github.ref
+            }}
+      - name: 'Remove unused tools'
+        run: &remove-unused-tools |
+          sudo rm -rf \
+            "$AGENT_TOOLSDIRECTORY" \
+            "/etc/skel/.dotnet/tools" \
+            "/home/.dotnet/tools" \
+            "/home/.nvm" \
+            "/home/linuxbrew" \
+            "/home/perflog" \
+            "/home/work/*" \
+            "/opt/*" \
+            "/usr/bin/composer" \
+            "/usr/bin/docker-credential-ecr-login" \
+            "/usr/bin/yq" \
+            "/usr/lib/jvm" \
+            "/usr/libexec/docker/cli-plugins" \
+            "/usr/local/.ghcup" \
+            "/usr/local/aws-cli" \
+            "/usr/local/bin/.ghcup" \
+            "/usr/local/bin/aliyun" \
+            "/usr/local/bin/azcopy" \
+            "/usr/local/bin/azcopy_11.3.1" \
+            "/usr/local/bin/bicep" \
+            "/usr/local/bin/ccmake" \
+            "/usr/local/bin/cmake-gui" \
+            "/usr/local/bin/cpack" \
+            "/usr/local/bin/ctest" \
+            "/usr/local/bin/docker-compose" \
+            "/usr/local/bin/helm" \
+            "/usr/local/bin/kind" \
+            "/usr/local/bin/kubectl" \
+            "/usr/local/bin/kustomize" \
+            "/usr/local/bin/minikube" \
+            "/usr/local/bin/oc" \
+            "/usr/local/bin/oras" \
+            "/usr/local/bin/packer" \
+            "/usr/local/bin/phpunit" \
+            "/usr/local/bin/pulumi" \
+            "/usr/local/bin/pulumi-analyzer-policy" \
+            "/usr/local/bin/pulumi-analyzer-policy-python" \
+            "/usr/local/bin/pulumi-language-dotnet" \
+            "/usr/local/bin/pulumi-language-go" \
+            "/usr/local/bin/pulumi-language-java" \
+            "/usr/local/bin/pulumi-language-nodejs" \
+            "/usr/local/bin/pulumi-language-python" \
+            "/usr/local/bin/pulumi-language-python-exec" \
+            "/usr/local/bin/pulumi-language-yaml" \
+            "/usr/local/bin/pulumi-resource-pulumi-nodejs" \
+            "/usr/local/bin/pulumi-resource-pulumi-python" \
+            "/usr/local/bin/pulumi-watch" \
+            "/usr/local/bin/rebar3" \
+            "/usr/local/bin/stack" \
+            "/usr/local/bin/terraform" \
+            "/usr/local/julia*" \
+            "/usr/local/lib/android" \
+            "/usr/local/lib/lein" \
+            "/usr/local/share/boost" \
+            "/usr/local/share/chromedriver-linux64" \
+            "/usr/local/share/chromium" \
+            "/usr/local/share/doc" \
+            "/usr/local/share/edge_driver" \
+            "/usr/local/share/emacs" \
+            "/usr/local/share/fonts" \
+            "/usr/local/share/gecko_driver" \
+            "/usr/local/share/icons" \
+            "/usr/local/share/man" \
+            "/usr/local/share/phantomjs*" \
+            "/usr/local/share/phantomjs-8.6" \
+            "/usr/local/share/powershell" \
+            "/usr/local/share/vcpkg" \
+            "/usr/local/sqlpackage" \
+            "/usr/share/apache-maven-3.8.8" \
+            "/usr/share/dotnet" \
+            "/usr/share/gradle-8.7" \
+            "/usr/share/kotlinc" \
+            "/usr/share/miniconda" \
+            "/usr/share/sbt" \
+            "/usr/share/swift" \
+            || true
+          sudo docker image prune --all --force
+          sudo npm uninstall bazel bazelisk || true
+          rustup self uninstall -y
+          sudo apt-get purge -y -- \
+            *-dev \
+            ansible \
+            ant \
+            ant-optional \
+            apache2 \
+            aria2 \
+            azure-cli \
+            bind9-* \
+            buildah \
+            cabal* \
+            clang* \
+            cloud-* \
+            cloud-initramfs* \
+            docker-* \
+            dotnet-sdk* \
+            firefox \
+            fonts-* \
+            gcc-10 \
+            gcc-11 \
+            gcc-11-* \
+            gcc-12 \
+            gcc-12-* \
+            gcc-9 \
+            gfortran-13 \
+            ghc* \
+            gir1.2-* \
+            golang-github-* \
+            google-chrome-stable \
+            google-cloud-cli \
+            heroku \
+            hicolor-icon-theme \
+            imagemagick-* \
+            javascript-common \
+            kubectl \
+            libfontconfig1-dev \
+            libfreetype6-dev \
+            libjs-* \
+            libllvm* \
+            liblz4-dev \
+            libmysqlclient-dev \
+            libpq-dev \
+            libpq-dev \
+            libxft-dev \
+            linux-azure-6.2-* \
+            linux-cloud-tools* \
+            linux-headers-* \
+            llvm-* \
+            man-db \
+            manpages \
+            microsoft-edge-stable \
+            moby-buildx \
+            moby-cli \
+            moby-compose \
+            moby-engine \
+            mongodb* \
+            mono-complete \
+            mssql-tools* \
+            mysql* \
+            nano \
+            nginx \
+            node* \
+            npm* \
+            nuget \
+            openjdk-11-jre-headless \
+            p7zip* \
+            packages-microsoft-prod \
+            perl \
+            php* \
+            podman \
+            postgresql* \
+            powershell \
+            python3-* \
+            r-base \
+            rpm \
+            ruby* \
+            skopeo \
+            skopeo \
+            snmp \
+            sphinxsearch \
+            subversion \
+            swig \
+            tcl \
+            tcl* \
+            temurin-* \
+            temurin-* \
+            ubuntu-advantage-tools \
+            unixodbc-dev \
+            x11-* \
+            yarn \
+            || true
+          sudo dpkg -r packages-microsoft-prod &>/dev/null || true
+          sudo apt-get autoremove -y &>/dev/null || true
+          sudo apt-get autoclean -y &>/dev/null || true
+      - name: 'Install Nix'
+        uses: 'cachix/install-nix-action@v31.11.3'
+        with: &install-nix-action-args
+          extra_nix_config: |
+            accept-flake-config = true
+            experimental-features = flakes nix-command pipe-operators
+          github_access_token: '${{ secrets.GITHUB_TOKEN }}'
+          nix_path: 'nixpkgs=channel:nixos-unstable'
+      - id: 'check'
+        name: 'Check deps hash'
+        run: |
+          update_needed=false
+          if ! nix build --no-link ".#default.pnpmDeps" &>/dev/null; then
+            update_needed=true
+          fi
+          echo "update-needed=$update_needed" >>"$GITHUB_OUTPUT"
+  update:
+    if: 'fromJSON(needs.check-for-update.outputs.update-needed)'
+    needs: 'check-for-update'
+    permissions:
+      contents: 'write'
+    runs-on: 'ubuntu-24.04'
+    steps:
+      - name: 'Checkout repository'
+        uses: 'actions/checkout@v7.0.1'
+        with:
+          fetch-depth: 0
+          ref: *checkout-ref
+      - name: 'Remove unused tools'
+        run: *remove-unused-tools
+      - name: 'Install Nix'
+        uses: 'cachix/install-nix-action@v31.11.3'
+        with: *install-nix-action-args
+      - name: 'Configure Git'
+        run: |
+          git config user.email \
+            "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+      - name: 'Update'
+        run: './nix/shell/update-deps-hash.sh'
+      - env:
+          BRANCH: >-
+            ${{
+              github.event_name == 'pull_request'
+              && github.head_ref
+              || github.ref_name
+            }}
+        name: 'Push'
+        run: |
+          git add ./deps-hash.txt
+          git commit --amend --no-edit
+          git push --force-with-lease origin "refs/heads/$BRANCH"
+name: 'Update deps hash'
+on:
+  pull_request:
+  workflow_dispatch:
