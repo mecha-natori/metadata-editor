@@ -12,6 +12,9 @@ inputs:
   tauri-private-key:
     description: 'Tauri private key for signing'
     required: true
+  tauri-private-key-password:
+    description: 'Password of tauri private key'
+    required: true
 name: 'Build for Linux AppImage'
 outputs:
   version:
@@ -81,6 +84,7 @@ runs:
         SIGN: '1'
         SIGN_KEY: '${{ inputs.gpg-sign-key }}'
         TAURI_SIGNING_PRIVATE_KEY: '${{ inputs.tauri-private-key }}'
+        TAURI_SIGNING_PRIVATE_KEY_PASSWORD: '${{ inputs.tauri-private-key-password }}'
       id: 'build'
       name: 'Build'
       shell: 'bash'

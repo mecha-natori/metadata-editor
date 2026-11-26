@@ -3,6 +3,9 @@ inputs:
   tauri-private-key:
     description: 'Tauri private key for signing'
     required: true
+  tauri-private-key-password:
+    description: 'Password of tauri private key'
+    required: true
 name: 'Build for macOS'
 outputs:
   version:
@@ -41,6 +44,7 @@ runs:
         file: 'Cargo.toml'
     - env:
         TAURI_SIGNING_PRIVATE_KEY: '${{ inputs.tauri-private-key }}'
+        TAURI_SIGNING_PRIVATE_KEY_PASSWORD: '${{ inputs.tauri-private-key-password }}'
       id: 'build'
       name: 'Build'
       shell: 'bash'

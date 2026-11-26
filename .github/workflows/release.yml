@@ -37,6 +37,7 @@ jobs:
             ${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
           gpg-sign-key: '${{ vars.GPG_SIGN_KEY }}'
           tauri-private-key: '${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}'
+          tauri-private-key-password: '${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}'
       - id: 'build-linux-archlinux'
         if: "matrix.os == 'linux-archlinux'"
         name: 'Build'
@@ -76,12 +77,14 @@ jobs:
         uses: '$/.github/actions/build-macos'
         with:
           tauri-private-key: '${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}'
+          tauri-private-key-password: '${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}'
       - id: 'build-windows'
         if: "matrix.os == 'windows'"
         name: 'Build'
         uses: '$/.github/actions/build-windows'
         with:
           tauri-private-key: '${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}'
+          tauri-private-key-password: '${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}'
       - name: 'Upload artifact'
         uses: 'actions/upload-artifact@v7.0.2'
         with:
