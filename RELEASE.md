@@ -16,7 +16,6 @@
 - `mechatronicslab-circuit-metadata-editor_X.X.X_universal.dmg`: macOS向けインストーラ
 - `mechatronicslab-circuit-metadata-editor_X.X.X_x64.tar.gz`: Linux全般向けtarball
 - `mechatronicslab-circuit-metadata-editor_X.X.X_x64_ja-JP.msi`: Windows向けインストーラ
-- `*.sig`: 各ファイルのGPG署名(フィンガープリント: `DCF85C4F1287C99B0E4E12B3AB39C1264641DB7E`)
 
 ______________________________________________________________________
 

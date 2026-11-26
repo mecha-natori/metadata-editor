@@ -4,6 +4,4 @@
 
 元々はCANのID選択用のロータリーDIPスイッチを付け忘れるという痛恨の大失態を何とかするために爆誕しましたが、それに加えて色々なデータを扱えるように独自形式のデータ保管庫の読み書きをするソフトとして書き直されました。
 
-ダウンロードは[GitHub Release]から。macOS・Windowsユーザーはインストール・起動時になんか怒られるかもしれませんが気にしないで下さい。プラットフォームのせいです。どうしても気になる方は一緒に`〜.sig`も落として`gpg --verify 〜.sig`で検証して下さい。GPG鍵のフィンガープリントは`DCF85C4F1287C99B0E4E12B3AB39C1264641DB7E`です。
-
-[github release]: https://github.com/mecha-natori/metadata-editor/releases
+AppImage・ArchLinuxパッケージ・RPMの署名鍵指紋: `8C6CE9CF9A90364925410F6DA9CE3FD9B84E680A`
