@@ -177,8 +177,8 @@ catalogs:
       specifier: ^17.14.0
       version: 17.14.0
     js-toml:
-      specifier: ^2.0.1
-      version: 2.0.1
+      specifier: ^2.0.2
+      version: 2.0.2
     oxfmt:
       specifier: ^0.76.0
       version: 0.76.0
@@ -311,7 +311,7 @@ importers:
     dependencies:
       js-toml:
         specifier: 'catalog:'
-        version: 2.0.1
+        version: 2.0.2
     devDependencies:
       '@ms0503/oxc-config':
         specifier: 'catalog:'
@@ -342,7 +342,7 @@ importers:
     dependencies:
       js-toml:
         specifier: 'catalog:'
-        version: 2.0.1
+        version: 2.0.2
     devDependencies:
       '@ms0503/oxc-config':
         specifier: 'catalog:'
@@ -1746,8 +1746,8 @@ packages:
     resolution: {integrity: sha512-AC/7JofJvZGrrneWNaEnJeOLUx+JlGt7tNa0wZiRPT4MY1wmfKjt2+6O2p2uz2+skll8OZZmJMNqeke7kKbNgQ==}
     hasBin: true
 
-  js-toml@2.0.1:
-    resolution: {integrity: sha512-HH5e3fCXraX+FDTjpu0IuITue9AjKxAATaIoRDcUqqUyZnBdPCYlxHPpjGEwZW93WT6r8lPY73O0ADugrtQR1g==}
+  js-toml@2.0.2:
+    resolution: {integrity: sha512-Xi7pOQnEpI6gh3yw+Fzr5KS5mxefo+VVCn7JWiOBNPlXQCMl3ecgAH3zpKaFqiYyGxpXBLilcrVZ2AkYhlnQCQ==}
 
   js-yaml@5.5.0:
     resolution: {integrity: sha512-paNr4LFIFPjeeSmwNYdrb8FafLLG/Cr2Af3GjbsHJ5CxIjH4r0c2emlmRdAtpPAieP1gRVzk6buBbVP5gBMGAg==}
@@ -3628,7 +3628,7 @@ snapshots:
 
   jiti@2.7.0: {}
 
-  js-toml@2.0.1:
+  js-toml@2.0.2:
     dependencies:
       chevrotain: 12.0.0
       xregexp: 5.1.3
