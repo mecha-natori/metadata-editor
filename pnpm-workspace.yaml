@@ -12,7 +12,7 @@ catalog:
   typescript: '^7.1.0-beta'
 catalogs:
   minimatch11:
-    minimatch: '^11.0.4'
+    minimatch: '^11.0.9'
   ts6:
     typescript: 'npm:@typescript/typescript6@^6.0.2'
 includeWorkspaceRoot: true
